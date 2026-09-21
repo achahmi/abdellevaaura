@@ -64,3 +64,211 @@ Esta prueba mide cuánto tarda cada servidor DNS en responder desde mi conexión
 | 3 | _(1.1.1.1)_ | _(Cloudflare, se dedica a ofrecer infraestructura, seguridad y optimización de rendimiento para sitios web, aplicaciones y redes en Internet)_ |
 
 Estos son los servidores que usaré en la siguiente fase.
+
+---
+
+# 2. Configuración y Caché
+
+## 2.1 Cambio de servidores DNS
+
+### ¿Cómo ver por consola qué servidores DNS tengo asignados?
+
+- **Windows:** con `ipconfig /all` y buscando la línea *Servidores DNS*. También sirve `Get-DnsClientServerAddress` en PowerShell.
+- **Linux:** con `resolvectl status`, que enseña los DNS de cada conexión. Otra opción es `cat /etc/resolv.conf`, aunque en muchas distribuciones solo muestra una dirección local (127.0.0.53) que reenvía a los DNS reales.
+
+**Captura:**
+
+_(pega aquí la captura de los DNS actuales)_
+
+### Cambiar los DNS de mi equipo por los del Benchmark
+
+Puse como DNS primario y secundario los dos primeros servidores que salieron en el benchmark de la fase 1.
+
+- **En Windows:** Configuración → Red e Internet → mi conexión (Wi-Fi o Ethernet) → Editar asignación del servidor DNS → Manual → activar IPv4 y escribir el DNS preferido y el alternativo.
+- **En Linux:** Configuración → Red → rueda dentada de mi conexión → IPv4 → desactivar el DNS automático y escribir las IPs. Por consola sería algo así: `nmcli con mod "NOMBRE_CONEXION" ipv4.dns "IP1 IP2" ipv4.ignore-auto-dns yes` y luego `nmcli con up "NOMBRE_CONEXION"`.
+
+**Datos que puse:**
+
+| | IP |
+| --- | --- |
+| DNS primario | 4.2.2.3 |
+| DNS secundario | 1.0.0.1 |
+
+**Captura del cambio:**
+
+_(pega aquí la captura)_
+
+### ¿Dónde se pueden forzar unos DNS en el móvil para una red Wi-Fi?
+
+- **Android:** Ajustes → Redes e Internet (o Conexiones) → Wi-Fi → tocar la rueda dentada de la red → Ajustes de IP → cambiar de DHCP a **Estática**. Ahí aparecen los campos *DNS 1* y *DNS 2*. Hay que rellenar también la IP y la puerta de enlace. Los nombres de los menús cambian un poco según la marca.
+- **iPhone (iOS):** Ajustes → Wi-Fi → pulsar la "i" de la red → **Configurar DNS** → cambiar de Automático a **Manual** → añadir los servidores.
+
+## 2.2 Gestión de la caché DNS
+
+La caché DNS es una "libreta" donde el equipo apunta las direcciones que ya ha consultado, para no tener que preguntar otra vez cada vez que entra en la misma web.
+
+### Ver la caché
+
+- **Windows:** `ipconfig /displaydns`
+- **Linux:** `resolvectl statistics` (muestra los datos de la caché: tamaño, aciertos y fallos).
+
+**Captura:**
+
+_(pega aquí la captura con algunas direcciones o datos de la caché)_
+
+### Vaciar la caché
+
+- **Windows:** `ipconfig /flushdns`
+- **Linux:** `resolvectl flush-caches`
+
+**Captura:**
+
+_(pega aquí la captura de haber vaciado la caché)_
+
+**¿Para qué sirve en el día a día de un administrador?**
+
+Sirve para asegurarse de que el equipo pregunta de nuevo y no usa datos antiguos. Por ejemplo, si cambiamos una web de servidor y la IP nueva no se ve porque el ordenador sigue recordando la antigua, vaciamos la caché y así comprobamos si el cambio funciona. También ayuda cuando una web no carga o lleva a un sitio equivocado por un dato viejo o erróneo guardado, y es un paso rápido a probar antes de buscar otros problemas.
+
+---
+
+# 3. Administración - Troubleshooting con DIG y CLI
+
+`dig` es la herramienta que se usa en Linux para hacer consultas DNS y ver qué responde cada servidor. He usado el dominio **aliexpress.com**.
+
+## 3.1 Consultas de registros
+
+### Registro A: `dig aliexpress.com`
+
+**Captura:**
+
+_(pega aquí la captura)_
+
+En la *ANSWER SECTION* aparece la respuesta a la pregunta. Cada línea tiene el nombre del dominio, el **TTL** (los segundos que se puede guardar la respuesta en la caché), la palabra `IN` (Internet), el tipo `A` y, al final, la **dirección IP** del dominio. Si sale más de una IP, es porque la web se reparte en varios servidores. Además, arriba se ve el estado de la consulta (`NOERROR` significa que todo fue bien) y, abajo, qué servidor DNS respondió y cuánto tardó.
+
+**Lo que me salió a mí:** _(anota aquí la IP o IPs y el TTL)_
+
+### Formato corto: `dig +short aliexpress.com`
+
+**Captura:**
+
+_(pega aquí la captura)_
+
+Con `+short` solo aparece la respuesta (la IP), sin nada más. Es útil en los scripts de Bash porque el resultado se puede guardar directamente en una variable o usar en otro comando, sin tener que limpiar todo el texto extra. Por ejemplo: `IP=$(dig +short aliexpress.com)`.
+
+### Registro MX: `dig MX aliexpress.com`
+
+**Captura:**
+
+_(pega aquí la captura)_
+
+Los registros MX indican qué servidores reciben el correo del dominio. Junto a cada servidor hay un número, la **prioridad** (*preference*). **Cuanto más bajo es el número, más prioridad tiene**: el correo se intenta entregar primero al servidor con el número más bajo, y los demás quedan como reserva por si ese falla.
+
+**Lo que me salió a mí:** _(anota aquí los servidores y sus prioridades)_
+
+### Registro NS: `dig NS aliexpress.com`
+
+**Captura:**
+
+_(pega aquí la captura)_
+
+Los registros NS muestran los servidores que tienen la **autoridad** sobre el dominio, es decir, los que guardan la información oficial y son los que dan la respuesta definitiva sobre él.
+
+**Lo que me salió a mí:** _(anota aquí los servidores NS)_
+
+## 3.2 Autoridad y Caché (TTL)
+
+### Diferencia entre SOA y NS
+
+- **NS:** es una lista con los servidores que se encargan de responder por el dominio. Dice *quién* responde.
+- **SOA:** es como la "ficha técnica" de la zona del dominio. Indica cuál es el servidor principal, el correo del administrador, un número de versión (*serial*) y varios tiempos que controlan cada cuánto se sincronizan los servidores y cuánto se guardan los datos. Dice *cómo se gestiona* la zona.
+
+### Prueba del TTL
+
+Hice una consulta a un dominio y anoté el TTL. A los 5 segundos volví a hacer la misma consulta.
+
+| | TTL |
+| --- | --- |
+| Primera consulta | _(anota el valor)_ |
+| A los 5 segundos | _(anota el valor)_ |
+
+**Captura:**
+
+_(pega aquí las capturas de las dos consultas)_
+
+El TTL **ha bajado** (unos 5 segundos menos). Eso demuestra que la respuesta no vino directamente del servidor oficial, sino de la **caché** de un servidor intermedio, que va descontando el tiempo que le queda al dato. Si la respuesta viniera del servidor autoritativo, siempre saldría el valor completo del TTL. Cuando el TTL llega a 0, la caché borra el dato y vuelve a preguntar al servidor oficial.
+
+## 3.3 Trazabilidad completa (Trace)
+
+Comando: `dig +trace aliexpress.com`
+
+**Captura:**
+
+_(pega aquí la captura)_
+
+Con `+trace`, en vez de preguntar a mi servidor DNS de siempre, dig hace todo el recorrido paso a paso, como haría un servidor DNS por dentro:
+
+1. **Servidores raíz (`.`):** empieza preguntando a uno de los servidores raíz. Ellos no saben la IP de aliexpress.com, pero sí saben quién se encarga de los dominios `.com`, y me dan la lista de esos servidores.
+2. **Servidores del TLD (`.com`):** pregunta a uno de ellos. Tampoco tienen la IP final, pero saben qué servidores son los oficiales de aliexpress.com, y me los indican.
+3. **Servidores autoritativos de aliexpress.com:** pregunta a uno de estos y este ya sí me da la respuesta final: la dirección IP del dominio.
+
+Es como preguntar por una dirección: primero a alguien que sabe el país, luego a alguien que sabe la ciudad y al final a quien conoce la calle.
+
+---
+
+# 4. Análisis de Tráfico de Red (Wireshark)
+
+## Preparación
+
+1. Abrí **Wireshark** y elegí mi tarjeta de red principal (Wi-Fi o Ethernet) para empezar a capturar.
+2. Puse el filtro `dns` en la barra de arriba para ver solo el tráfico DNS.
+3. En una terminal ejecuté: `nslookup -type=mx google.com`
+4. Detuve la captura y busqué la **petición** (Query) y la **respuesta** (Response).
+
+**Captura general (petición y respuesta):**
+
+_(pega aquí la captura de Wireshark con el filtro aplicado)_
+
+## Capa de transporte
+
+Se usa **UDP**. DNS usa UDP por defecto porque las consultas y las respuestas suelen ser muy pequeñas: una pregunta y una respuesta. UDP es más rápido y ligero, porque no tiene que establecer una conexión antes de enviar los datos como hace TCP. Solo se pasa a TCP cuando la respuesta es demasiado grande o en casos como la copia de zonas entre servidores.
+
+**Captura del panel de detalles:**
+
+_(pega aquí la captura donde se vea UDP)_
+
+## Puertos
+
+- **Puerto de origen (mi equipo):** _(anota aquí el número)_. Es un puerto dinámico, un número alto que el sistema elige al azar en cada consulta.
+- **Puerto de destino (servidor DNS):** **53**, que es el puerto conocido del DNS.
+
+**Captura:**
+
+_(pega aquí la captura donde se vean los puertos)_
+
+## Identificador (Transaction ID)
+
+El identificador de la transacción es: _(anota aquí el valor, por ejemplo 0x1a2b)_.
+
+Es un número que se pone en la petición y que el servidor copia en la respuesta. Gracias a eso mi equipo sabe qué respuesta corresponde a cada pregunta, sobre todo cuando hay varias consultas a la vez.
+
+**Captura:**
+
+_(pega aquí la captura donde se vea el mismo ID en la petición y en la respuesta)_
+
+## Flags
+
+En el paquete de respuesta, la opción **Authoritative Answer** normalmente está a **0**, y hay que confirmarlo con mi captura: _(anota aquí el valor que te salió)_.
+
+Que esté a 0 significa que la respuesta no la ha dado el servidor oficial de google.com, sino un servidor intermedio (como el de mi router o el DNS que configuré), que la ha sacado de su caché o la ha consultado por mí. Si estuviera a 1, querría decir que quien responde es directamente el servidor autoritativo del dominio.
+
+**Captura:**
+
+_(pega aquí la captura de la sección Flags)_
+
+## Respuestas (Answers)
+
+En el bloque de respuestas aparecen los servidores de correo de google.com. El que tiene la prioridad más alta es el que tiene el **número más bajo** de *preference*. En mi captura es: _(anota aquí el servidor y su preference)_. Lo habitual es que salga `smtp.google.com` con preference 10, pero hay que comprobarlo con lo que salga en la captura.
+
+**Captura:**
+
+_(pega aquí la captura del bloque Answers)_

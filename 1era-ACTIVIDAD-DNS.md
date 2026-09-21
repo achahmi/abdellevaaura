@@ -9,8 +9,7 @@ Apuntes de abdellah chahmi
 
 ### ¿Qué organismo coordina y asigna los parámetros a nivel global del sistema de nombres de dominio e IPs?
 
-La **ICANN** (Corporación para la Asignación de Nombres y Números en Internet). Es una organización sin ánimo de lucro que se encarga de que Internet funcione de forma ordenada en todo el mundo. Entre otras cosas, coordina los nombres de dominio y las direcciones IP para que no haya dos iguales. Dentro de la ICANN está la función **IANA**, que es la que reparte los bloques de direcciones IP y mantiene la lista oficial de las terminaciones de dominio (.com, .es, .cat, etc.).
-
+La **ICANN** (Corporación para la Asignación de Nombres y Números en Internet). Es una organización que no busca dinero la se encarga de que Internet funcione de forma ordenada en todo el mundo. Entre otras cosas, coordina los nombres de dominio y las direcciones IP para que no haya dos iguales. Dentro de la ICANN está la función **IANA**, que es la que reparte los bloques de direcciones IP y mantiene la lista oficial de los dominios como .es .cat .edu .ifp.es
 ### ¿Qué empresa u organismo gestiona (Registry) cada dominio de nivel superior?
 
 | Dominio | Quién lo gestiona (Registry) |
@@ -26,7 +25,7 @@ La **ICANN** (Corporación para la Asignación de Nombres y Números en Internet
 
 Es como la "ficha" del dominio. Normalmente se puede ver:
 
-- Quién es el **titular** (el dueño), aunque muchas veces sale oculto por temas de privacidad.
+- Quién es el dueño, aunque muchas veces sale oculto por temas de privacidad.
 - Qué **registrador** lo tiene gestionado.
 - Las fechas importantes: cuándo se **creó**, cuándo **caduca** y cuándo se modificó por última vez.
 - Los **servidores DNS** que usa el dominio.
@@ -41,7 +40,7 @@ Dicho de forma sencilla: el Registry es el "mayorista" que guarda la lista ofici
 
 ### ¿Qué es DNSSEC y qué problema de seguridad intenta resolver?
 
-Por defecto, el DNS funciona con confianza: cuando pregunto por una web, me creo la respuesta sin comprobar que sea de verdad. Eso permite que un atacante pueda **falsificar la respuesta** y llevarme a una página falsa (por ejemplo, una que imita a mi banco) sin que yo me entere.
+De normal, el DNS funciona con confianza: cuando pregunto por una web, me creo la respuesta sin comprobar que sea de verdad. Eso permite que un atacante pueda **falsificar la respuesta** y llevarme a una página falsa (por ejemplo, una que imita a mi banco) sin que yo me entere.
 
 **DNSSEC** soluciona esto añadiendo **firmas digitales** a las respuestas DNS. Así, mi equipo puede comprobar que la respuesta viene realmente del dueño del dominio y que nadie la ha cambiado por el camino. Ojo: DNSSEC no cifra nada, solo sirve para comprobar que la respuesta es auténtica.
 
@@ -54,15 +53,14 @@ Esta prueba mide cuánto tarda cada servidor DNS en responder desde mi conexión
 3. Miré la lista ordenada por velocidad y me quedé con los 3 primeros.
 
 **Captura del resultado:**
-
-_(pega aquí la captura del benchmark)_
+<img width="581" height="461" alt="image" src="https://github.com/user-attachments/assets/d8885e5f-51a9-4ac5-a83b-b523de12912b" />
 
 **Los 3 servidores DNS más rápidos:**
 
 | Puesto | IP | Empresa |
 | --- | --- | --- |
-| 1 | _(pon aquí la IP)_ | _(qué empresa es y a qué se dedica)_ |
-| 2 | _(pon aquí la IP)_ | _(qué empresa es y a qué se dedica)_ |
-| 3 | _(pon aquí la IP)_ | _(qué empresa es y a qué se dedica)_ |
+| 1 | _(4.2.2.3)_ | _(Level 3 Parent, LLC - Louisiana, se dedica a la prestación de servicios de telecomunicaciones por línea fija (wireline), redes basadas en IP, fibra óptica y soluciones de conectividad empresarial)_ |
+| 2 | _(1.0.0.1)_ | _(Cloudflare, se dedica a ofrecer infraestructura, seguridad y optimización de rendimiento para sitios web, aplicaciones y redes en Internet)_ |
+| 3 | _(1.1.1.1)_ | _(Cloudflare, se dedica a ofrecer infraestructura, seguridad y optimización de rendimiento para sitios web, aplicaciones y redes en Internet)_ |
 
 Estos son los servidores que usaré en la siguiente fase.

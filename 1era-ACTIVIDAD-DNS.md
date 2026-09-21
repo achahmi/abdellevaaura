@@ -165,9 +165,6 @@ Los registros MX indican qué servidores reciben el correo del dominio. Junto a 
 
 Los registros NS muestran los servidores que tienen la **autoridad** sobre el dominio, es decir, los que guardan la información oficial y son los que dan la respuesta definitiva sobre él.
 
-**Lo que me salió a mí:** 
-<img width="557" height="117" alt="image" src="https://github.com/user-attachments/assets/56d70402-432c-436a-95b7-a5973fb69481" />
-
 ## 3.2 Autoridad y Caché (TTL)
 
 ### Diferencia entre SOA y NS
@@ -181,12 +178,12 @@ Hice una consulta a un dominio y anoté el TTL. A los 5 segundos volví a hacer 
 
 | | TTL |
 | --- | --- |
-| Primera consulta | _(anota el valor)_ |
-| A los 5 segundos | _(anota el valor)_ |
+| Primera consulta | 600 |
+| A los 5 segundos | 594 |
 
 **Captura:**
+<img width="555" height="121" alt="image" src="https://github.com/user-attachments/assets/89a0ded4-f098-4782-af34-76bb93cbb967" />
 
-_(pega aquí las capturas de las dos consultas)_
 
 El TTL **ha bajado** (unos 5 segundos menos). Eso demuestra que la respuesta no vino directamente del servidor oficial, sino de la **caché** de un servidor intermedio, que va descontando el tiempo que le queda al dato. Si la respuesta viniera del servidor autoritativo, siempre saldría el valor completo del TTL. Cuando el TTL llega a 0, la caché borra el dato y vuelve a preguntar al servidor oficial.
 
@@ -196,7 +193,8 @@ Comando: `dig +trace aliexpress.com`
 
 **Captura:**
 
-_(pega aquí la captura)_
+<img width="959" height="473" alt="image" src="https://github.com/user-attachments/assets/bec723b0-2950-472b-9b28-7bd96acd6543" />
+
 
 Con `+trace`, en vez de preguntar a mi servidor DNS de siempre, dig hace todo el recorrido paso a paso, como haría un servidor DNS por dentro:
 
@@ -204,7 +202,7 @@ Con `+trace`, en vez de preguntar a mi servidor DNS de siempre, dig hace todo el
 2. **Servidores del TLD (`.com`):** pregunta a uno de ellos. Tampoco tienen la IP final, pero saben qué servidores son los oficiales de aliexpress.com, y me los indican.
 3. **Servidores autoritativos de aliexpress.com:** pregunta a uno de estos y este ya sí me da la respuesta final: la dirección IP del dominio.
 
-Es como preguntar por una dirección: primero a alguien que sabe el país, luego a alguien que sabe la ciudad y al final a quien conoce la calle.
+Es como preguntar por una dirección, primero a alguien que sabe el país, luego a alguien que sabe la ciudad y al final a quien conoce la calle.
 
 ---
 

@@ -74,33 +74,19 @@ Estos son los servidores que usaré en la siguiente fase.
 ### ¿Cómo ver por consola qué servidores DNS tengo asignados?
 
 - **Windows:** con `ipconfig /all` y buscando la línea *Servidores DNS*. También sirve `Get-DnsClientServerAddress` en PowerShell.
-- **Linux:** con `resolvectl status`, que enseña los DNS de cada conexión. Otra opción es `cat /etc/resolv.conf`, aunque en muchas distribuciones solo muestra una dirección local (127.0.0.53) que reenvía a los DNS reales.
 
-**Captura:**
+**Captura:** 
+<img width="1000" height="468" alt="image" src="https://github.com/user-attachments/assets/419dd675-ff7e-4bae-857e-f8d70d76d31c" />
 
-_(pega aquí la captura de los DNS actuales)_
 
 ### Cambiar los DNS de mi equipo por los del Benchmark
 
 Puse como DNS primario y secundario los dos primeros servidores que salieron en el benchmark de la fase 1.
-
-- **En Windows:** Configuración → Red e Internet → mi conexión (Wi-Fi o Ethernet) → Editar asignación del servidor DNS → Manual → activar IPv4 y escribir el DNS preferido y el alternativo.
-- **En Linux:** Configuración → Red → rueda dentada de mi conexión → IPv4 → desactivar el DNS automático y escribir las IPs. Por consola sería algo así: `nmcli con mod "NOMBRE_CONEXION" ipv4.dns "IP1 IP2" ipv4.ignore-auto-dns yes` y luego `nmcli con up "NOMBRE_CONEXION"`.
-
-**Datos que puse:**
-
-| | IP |
-| --- | --- |
-| DNS primario | 4.2.2.3 |
-| DNS secundario | 1.0.0.1 |
-
-**Captura del cambio:**
-
-_(pega aquí la captura)_
+<img width="530" height="700" alt="image" src="https://github.com/user-attachments/assets/2a52a1c8-e097-4849-b916-7b1bf289fe6e" />
+<img width="835" height="752" alt="image" src="https://github.com/user-attachments/assets/6df857ed-33f0-4c0f-bd79-15dd33835155" />
 
 ### ¿Dónde se pueden forzar unos DNS en el móvil para una red Wi-Fi?
 
-- **Android:** Ajustes → Redes e Internet (o Conexiones) → Wi-Fi → tocar la rueda dentada de la red → Ajustes de IP → cambiar de DHCP a **Estática**. Ahí aparecen los campos *DNS 1* y *DNS 2*. Hay que rellenar también la IP y la puerta de enlace. Los nombres de los menús cambian un poco según la marca.
 - **iPhone (iOS):** Ajustes → Wi-Fi → pulsar la "i" de la red → **Configurar DNS** → cambiar de Automático a **Manual** → añadir los servidores.
 
 ## 2.2 Gestión de la caché DNS
@@ -110,20 +96,22 @@ La caché DNS es una "libreta" donde el equipo apunta las direcciones que ya ha 
 ### Ver la caché
 
 - **Windows:** `ipconfig /displaydns`
-- **Linux:** `resolvectl statistics` (muestra los datos de la caché: tamaño, aciertos y fallos).
 
 **Captura:**
 
-_(pega aquí la captura con algunas direcciones o datos de la caché)_
+<img width="591" height="981" alt="image" src="https://github.com/user-attachments/assets/ca9f0e10-518a-4cf2-b139-b2d669d70a19" />
+<img width="674" height="930" alt="image" src="https://github.com/user-attachments/assets/6fa27e13-c333-4314-b32f-ee5e2349814a" />
+
+
 
 ### Vaciar la caché
 
 - **Windows:** `ipconfig /flushdns`
-- **Linux:** `resolvectl flush-caches`
 
 **Captura:**
 
-_(pega aquí la captura de haber vaciado la caché)_
+<img width="508" height="135" alt="image" src="https://github.com/user-attachments/assets/8f897d2f-384a-46c5-b9e8-62b3c51154ad" />
+
 
 **¿Para qué sirve en el día a día de un administrador?**
 
@@ -140,18 +128,20 @@ Sirve para asegurarse de que el equipo pregunta de nuevo y no usa datos antiguos
 ### Registro A: `dig aliexpress.com`
 
 **Captura:**
+<img width="558" height="280" alt="image" src="https://github.com/user-attachments/assets/818847b7-b76a-4cfa-9b63-9baafe34f838" />
 
-_(pega aquí la captura)_
 
 En la *ANSWER SECTION* aparece la respuesta a la pregunta. Cada línea tiene el nombre del dominio, el **TTL** (los segundos que se puede guardar la respuesta en la caché), la palabra `IN` (Internet), el tipo `A` y, al final, la **dirección IP** del dominio. Si sale más de una IP, es porque la web se reparte en varios servidores. Además, arriba se ve el estado de la consulta (`NOERROR` significa que todo fue bien) y, abajo, qué servidor DNS respondió y cuánto tardó.
 
-**Lo que me salió a mí:** _(anota aquí la IP o IPs y el TTL)_
+**Lo que me salió a mí:** 
+<img width="523" height="81" alt="image" src="https://github.com/user-attachments/assets/09077e0f-8533-4fe1-9aa1-98ce790cda39" />
+
 
 ### Formato corto: `dig +short aliexpress.com`
 
 **Captura:**
+<img width="394" height="62" alt="image" src="https://github.com/user-attachments/assets/6febca69-ab25-40b2-8607-b82d5d218161" />
 
-_(pega aquí la captura)_
 
 Con `+short` solo aparece la respuesta (la IP), sin nada más. Es útil en los scripts de Bash porque el resultado se puede guardar directamente en una variable o usar en otro comando, sin tener que limpiar todo el texto extra. Por ejemplo: `IP=$(dig +short aliexpress.com)`.
 
@@ -159,7 +149,8 @@ Con `+short` solo aparece la respuesta (la IP), sin nada más. Es útil en los s
 
 **Captura:**
 
-_(pega aquí la captura)_
+<img width="613" height="342" alt="image" src="https://github.com/user-attachments/assets/3a6d3a9c-bce5-4ef4-aee5-776084279f1a" />
+
 
 Los registros MX indican qué servidores reciben el correo del dominio. Junto a cada servidor hay un número, la **prioridad** (*preference*). **Cuanto más bajo es el número, más prioridad tiene**: el correo se intenta entregar primero al servidor con el número más bajo, y los demás quedan como reserva por si ese falla.
 
@@ -169,11 +160,13 @@ Los registros MX indican qué servidores reciben el correo del dominio. Junto a 
 
 **Captura:**
 
-_(pega aquí la captura)_
+<img width="649" height="355" alt="image" src="https://github.com/user-attachments/assets/f565fd07-f49d-4aec-9c49-fb456c25eec0" />
+
 
 Los registros NS muestran los servidores que tienen la **autoridad** sobre el dominio, es decir, los que guardan la información oficial y son los que dan la respuesta definitiva sobre él.
 
-**Lo que me salió a mí:** _(anota aquí los servidores NS)_
+**Lo que me salió a mí:** 
+<img width="557" height="117" alt="image" src="https://github.com/user-attachments/assets/56d70402-432c-436a-95b7-a5973fb69481" />
 
 ## 3.2 Autoridad y Caché (TTL)
 

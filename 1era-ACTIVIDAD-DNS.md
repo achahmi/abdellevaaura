@@ -82,8 +82,10 @@ Estos son los servidores que usaré en la siguiente fase.
 ### Cambiar los DNS de mi equipo por los del Benchmark
 
 Puse como DNS primario y secundario los dos primeros servidores que salieron en el benchmark de la fase 1.
-<img width="530" height="700" alt="image" src="https://github.com/user-attachments/assets/2a52a1c8-e097-4849-b916-7b1bf289fe6e" />
-<img width="835" height="752" alt="image" src="https://github.com/user-attachments/assets/6df857ed-33f0-4c0f-bd79-15dd33835155" />
+<img width="494" height="691" alt="image" src="https://github.com/user-attachments/assets/631c55fe-e1bc-48c5-bc08-e665b406d07e" />
+
+<img width="801" height="175" alt="image" src="https://github.com/user-attachments/assets/b078e7e7-9fcb-434c-92c4-8079f39eb474" />
+
 
 ### ¿Dónde se pueden forzar unos DNS en el móvil para una red Wi-Fi?
 

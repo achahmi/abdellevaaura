@@ -154,7 +154,6 @@ Con `+short` solo aparece la respuesta (la IP), sin nada más. Es útil en los s
 
 Los registros MX indican qué servidores reciben el correo del dominio. Junto a cada servidor hay un número, la **prioridad** (*preference*). **Cuanto más bajo es el número, más prioridad tiene**: el correo se intenta entregar primero al servidor con el número más bajo, y los demás quedan como reserva por si ese falla.
 
-**Lo que me salió a mí:** _(anota aquí los servidores y sus prioridades)_
 
 ### Registro NS: `dig NS aliexpress.com`
 
@@ -216,8 +215,10 @@ Es como preguntar por una dirección, primero a alguien que sabe el país, luego
 4. Detuve la captura y busqué la **petición** (Query) y la **respuesta** (Response).
 
 **Captura general (petición y respuesta):**
+<img width="748" height="558" alt="image" src="https://github.com/user-attachments/assets/935955b8-1499-4cde-b05e-50aa520b2dab" />
+<img width="719" height="252" alt="image" src="https://github.com/user-attachments/assets/1187b545-b701-43b5-809e-63ff419d691a" />
 
-_(pega aquí la captura de Wireshark con el filtro aplicado)_
+
 
 ## Capa de transporte
 
@@ -225,41 +226,48 @@ Se usa **UDP**. DNS usa UDP por defecto porque las consultas y las respuestas su
 
 **Captura del panel de detalles:**
 
-_(pega aquí la captura donde se vea UDP)_
+<img width="956" height="241" alt="image" src="https://github.com/user-attachments/assets/ac64457b-5c6b-4a0a-83cf-116561c7b470" />
+
 
 ## Puertos
 
-- **Puerto de origen (mi equipo):** _(anota aquí el número)_. Es un puerto dinámico, un número alto que el sistema elige al azar en cada consulta.
+- **Puerto de origen (mi equipo):** 57018. Es un puerto dinámico, un número alto que el sistema elige al azar en cada consulta.
 - **Puerto de destino (servidor DNS):** **53**, que es el puerto conocido del DNS.
 
 **Captura:**
+<img width="362" height="131" alt="image" src="https://github.com/user-attachments/assets/ab8ba11c-9340-4956-8d09-8f32383d3933" />
 
-_(pega aquí la captura donde se vean los puertos)_
+<img width="472" height="98" alt="image" src="https://github.com/user-attachments/assets/3e1dd713-9e06-4d1a-a02c-6863854270b7" />
+
 
 ## Identificador (Transaction ID)
 
-El identificador de la transacción es: _(anota aquí el valor, por ejemplo 0x1a2b)_.
+El identificador de la transacción es: 0x0002.
 
 Es un número que se pone en la petición y que el servidor copia en la respuesta. Gracias a eso mi equipo sabe qué respuesta corresponde a cada pregunta, sobre todo cuando hay varias consultas a la vez.
 
 **Captura:**
 
-_(pega aquí la captura donde se vea el mismo ID en la petición y en la respuesta)_
+<img width="333" height="158" alt="image" src="https://github.com/user-attachments/assets/8b5a62a0-cfc0-4f9c-8da5-4c81fa11d2fc" />
+<img width="363" height="201" alt="image" src="https://github.com/user-attachments/assets/4ac37900-4764-4339-9aab-19c2a59df824" />
+
 
 ## Flags
 
-En el paquete de respuesta, la opción **Authoritative Answer** normalmente está a **0**, y hay que confirmarlo con mi captura: _(anota aquí el valor que te salió)_.
+En el paquete de respuesta, la opción **Authoritative Answer** normalmente está a **0**, y hay que confirmarlo con mi captura: a mi me ha salido 0.
 
 Que esté a 0 significa que la respuesta no la ha dado el servidor oficial de google.com, sino un servidor intermedio (como el de mi router o el DNS que configuré), que la ha sacado de su caché o la ha consultado por mí. Si estuviera a 1, querría decir que quien responde es directamente el servidor autoritativo del dominio.
 
 **Captura:**
 
-_(pega aquí la captura de la sección Flags)_
+<img width="343" height="83" alt="image" src="https://github.com/user-attachments/assets/4cdabdb8-fb91-463c-89a5-6ad79c1e5194" />
+
 
 ## Respuestas (Answers)
 
-En el bloque de respuestas aparecen los servidores de correo de google.com. El que tiene la prioridad más alta es el que tiene el **número más bajo** de *preference*. En mi captura es: _(anota aquí el servidor y su preference)_. Lo habitual es que salga `smtp.google.com` con preference 10, pero hay que comprobarlo con lo que salga en la captura.
+En el bloque de respuestas aparecen los servidores de correo de google.com. El que tiene la prioridad más alta es el que tiene el **número más bajo** de *preference*. En mi captura es: smtp.google.com Preference: 10
+. Lo habitual es que salga `smtp.google.com` con preference 10, pero hay que comprobarlo con lo que salga en la captura.
 
 **Captura:**
 
-_(pega aquí la captura del bloque Answers)_
+<img width="581" height="37" alt="image" src="https://github.com/user-attachments/assets/3342852a-7aaa-4064-aace-7e694a3d5785" />

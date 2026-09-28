@@ -1,1 +1,4 @@
+Aqui explicaré como configurar un servidor dns en una maquina UBUNTU SERVER 26.04.1
+
+Primero, despues de haber creado la máquina y configurado el nombre, empezaremos por hacer un "sudo apt update":
 

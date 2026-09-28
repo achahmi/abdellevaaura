@@ -161,3 +161,26 @@ He añadido un -4 en el apartado de "OPTIONS", esto es para que pueda forzar el 
 
 <img width="315" height="150" alt="image" src="https://github.com/user-attachments/assets/ae3c91ef-f684-42a7-8fe5-3d50dc873410" />
 
+
+## 6. Reiniciar el servicio y comprobar que funciona
+
+Después de guardar los cambios en los archivos de configuración, reinicié el servicio de BIND para que cargara la nueva configuración y comprobé su estado:
+
+```bash
+sudo systemctl restart bind9
+systemctl status bind9
+```
+
+![Reinicio y estado del servicio bind9](imagenes/reinicio-bind9.png)
+
+`bind9` es otro nombre del servicio `named`, que es el programa que hace de servidor DNS.
+
+### Qué se ve en la captura
+
+- **`Active: active (running)` en verde:** el servicio está funcionando correctamente después del reinicio.
+- **`enabled`:** el servicio está activado para que arranque solo cada vez que se enciende la máquina.
+- **`zone haven.local/IN: loaded serial 2`:** la zona directa se ha cargado bien.
+- **`zone 6.168.192.in-addr.arpa/IN: loaded serial 2`:** la zona inversa también se ha cargado bien.
+- **`all zones loaded` y `running`:** BIND ha cargado todas las zonas y el servidor está en marcha.
+
+Con esto queda comprobado que la configuración es correcta y que el servidor DNS funciona.

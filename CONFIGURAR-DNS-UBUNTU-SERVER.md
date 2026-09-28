@@ -93,3 +93,7 @@ Para asegurarme de que el archivo estaba bien escrito, lo comprobé con la herra
 ![Comprobación con named-checkzone](imagenes/named-checkzone-inversa.png)
 
 El resultado fue que cargó la zona (`loaded serial 2`) y terminó con **`OK`**, es decir, el archivo no tiene errores y funciona correctamente.
+
+### Ya que estaba haciendo comprobaciones, también he comprobado el archivo db.haven.local
+<img width="750" height="65" alt="image" src="https://github.com/user-attachments/assets/dae1a8f3-0386-4944-83b0-70b75ad1ad89" />
+

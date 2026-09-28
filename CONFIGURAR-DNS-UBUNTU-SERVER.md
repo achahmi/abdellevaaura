@@ -39,3 +39,24 @@ Al principio tenía puesta en el segundo adaptador una **ruta por defecto** (`ro
 Lo arreglé simplemente **quitando el bloque `routes`** (lo comenté con `#`). Así la única salida a Internet es la del adaptador NAT, que es la que funciona, y la red interna se usa solo para comunicarse dentro de la red local.
 
 ![Bloque routes comentado](imagenes/netplan-routes-comentado.png)
+
+## 3. Declarar las zonas (named.conf.local)
+
+Después modifiqué el archivo `named.conf.local`, que está en la carpeta de configuración de BIND (`/etc/bind/`):
+
+```bash
+sudo nano /etc/bind/named.conf.local
+```
+
+En este archivo se le dice al servidor DNS **de qué zonas se encarga**, es decir, qué dominios va a gestionar él mismo. Yo declaré dos:
+
+![Configuración de named.conf.local](imagenes/named-conf-local.png)
+
+### Qué hace cada parte
+
+- **Búsqueda directa (`zone "haven.local"`):** es la zona que traduce **nombres a IPs**. Cuando alguien pregunta por un nombre como `servidor.haven.local`, el servidor busca aquí su dirección IP.
+- **Búsqueda inversa (`zone "6.168.192.in-addr.arpa"`):** es la zona que hace lo contrario, traduce **IPs a nombres**. Su nombre se forma escribiendo la red al revés (`192.168.6` pasa a ser `6.168.192`) y añadiendo `.in-addr.arpa`. Así, al preguntar por una IP de mi red, el servidor puede responder con el nombre que le corresponde.
+- **`type master`:** indica que este servidor es el **principal** de la zona, o sea, el que tiene los datos originales y manda sobre ellos. Si algún día hubiera un segundo servidor de respaldo, sería de tipo `slave` y copiaría los datos de este.
+- **`file "..."`:** es la ruta del **archivo de zona**, donde se escriben los registros de cada zona (los nombres y sus IPs). En mi caso son `/etc/bind/zones/db.haven.local` para la directa y `/etc/bind/zones/db.6.168.192` para la inversa.
+
+Los archivos de zona que aparecen en `file` hay que crearlos aparte, y ahí es donde se escriben los registros.

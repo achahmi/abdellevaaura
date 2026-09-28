@@ -97,3 +97,60 @@ El resultado fue que cargó la zona (`loaded serial 2`) y terminó con **`OK`**,
 ### Ya que estaba haciendo comprobaciones, también he comprobado el archivo db.haven.local
 <img width="750" height="65" alt="image" src="https://github.com/user-attachments/assets/dae1a8f3-0386-4944-83b0-70b75ad1ad89" />
 
+
+## 5. Configurar las opciones del servidor (named.conf.options)
+
+Después modifiqué el archivo `named.conf.options`, donde se definen las opciones generales del servidor DNS:
+
+```bash
+sudo nano /etc/bind/named.conf.options
+```
+
+Y lo dejé así:
+
+![Configuración de named.conf.options](imagenes/named-conf-options.png)
+
+### Paso a paso: qué hace cada parte
+
+**1. Lista de clientes permitidos (`acl "safeclients"`)**
+
+Lo primero que hice fue crear una lista con nombre, llamada `safeclients` (clientes seguros), con los equipos a los que voy a dejar usar el servidor:
+
+- `localhost`: el propio servidor.
+- `192.168.6.125`: la IP del servidor en la red interna.
+- `192.168.6.27`: la IP de un equipo cliente concreto de la red.
+- `localnets`: todas las redes a las que está conectado directamente el servidor, es decir, mi red interna.
+
+Después uso esa lista en varias opciones, para no tener que repetir las IPs cada vez.
+
+**2. Carpeta de trabajo (`directory "/var/cache/bind"`)**
+
+Es la carpeta donde BIND guarda sus archivos temporales y su caché.
+
+**3. Permitir consultas recursivas (`recursion yes`)**
+
+Con esto el servidor puede **buscar por su cuenta** la respuesta cuando un cliente le pregunta por un dominio que no es suyo (por ejemplo, `google.com`), en lugar de contestar que no lo sabe.
+
+**4. Quién puede usar la recursión (`allow-recursion { safeclients; };`)**
+
+La recursión solo está permitida a los equipos de la lista `safeclients`. Así evito que cualquier otro equipo use mi servidor para hacer consultas, lo que sería un riesgo de seguridad.
+
+**5. Por dónde escucha (`listen-on { 192.168.6.125; };`)**
+
+El servidor solo atiende peticiones que lleguen por la IP `192.168.6.125`, que es la de la red interna. No escucha por el adaptador NAT.
+
+**6. Sin transferencias de zona (`allow-transfer { none; };`)**
+
+Con `none` no dejo que ningún otro servidor copie mis zonas. Como no tengo servidores secundarios, es lo más seguro.
+
+**7. Quién puede hacer consultas (`allow-query { safeclients; };`)**
+
+Solo los equipos de `safeclients` pueden hacerle consultas al servidor.
+
+**8. Quién puede usar la caché (`allow-query-cache { safeclients; };`)**
+
+Solo los equipos de `safeclients` pueden recibir respuestas de la caché, que es donde el servidor guarda las respuestas que ya buscó para responder más rápido la próxima vez.
+
+**9. Servidores de reenvío (`forwarders`)**
+
+Aquí puse `9.9.9.9` (Quad9) y `8.8.8.8` (Google). Cuando mi servidor no sabe la respuesta a una consulta, en vez de buscarla él desde cero, se la **pregunta a estos servidores**. Para llegar a ellos usa la salida a Internet del adaptador NAT.

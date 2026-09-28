@@ -175,12 +175,9 @@ systemctl status bind9
 
 `bind9` es otro nombre del servicio `named`, que es el programa que hace de servidor DNS.
 
-### Qué se ve en la captura
 
-- **`Active: active (running)` en verde:** el servicio está funcionando correctamente después del reinicio.
-- **`enabled`:** el servicio está activado para que arranque solo cada vez que se enciende la máquina.
-- **`zone haven.local/IN: loaded serial 2`:** la zona directa se ha cargado bien.
-- **`zone 6.168.192.in-addr.arpa/IN: loaded serial 2`:** la zona inversa también se ha cargado bien.
-- **`all zones loaded` y `running`:** BIND ha cargado todas las zonas y el servidor está en marcha.
+## Para terminar he hecho una comprobacion para ver si resuelve, y si lo hace 
 
-Con esto queda comprobado que la configuración es correcta y que el servidor DNS funciona.
+<img width="360" height="146" alt="image" src="https://github.com/user-attachments/assets/091a4b76-c194-47d5-ab4f-a3bc73826beb" />
+
+

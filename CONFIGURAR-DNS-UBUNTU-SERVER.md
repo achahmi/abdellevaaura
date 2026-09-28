@@ -181,3 +181,7 @@ systemctl status bind9
 <img width="360" height="146" alt="image" src="https://github.com/user-attachments/assets/091a4b76-c194-47d5-ab4f-a3bc73826beb" />
 
 
+## CAMBIOS IMPORTANTES:
+**Me di cuenta de el enlace simbolico del resolvectl se hacia en un archivo el cual no me servia, ya que al hacer un nslookup a google no me daba respuesta y tuve que cambiarlo con este comando al archivo que realmente me servia:
+
+<img width="763" height="41" alt="image" src="https://github.com/user-attachments/assets/b59ece34-b055-4d32-a5fe-e56c1ef187e9" />

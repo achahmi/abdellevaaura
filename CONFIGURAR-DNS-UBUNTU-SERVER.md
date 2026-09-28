@@ -158,5 +158,6 @@ Aquí puse `9.9.9.9` (Quad9) y `8.8.8.8` (Google). Cuando mi servidor no sabe la
 
 **Antes de poner el servicio en marcha he modificado el archivo "/etc/default/named"**
 He añadido un -4 en el apartado de "OPTIONS", esto es para que pueda forzar el uso del IPV4:
+
 <img width="315" height="150" alt="image" src="https://github.com/user-attachments/assets/ae3c91ef-f684-42a7-8fe5-3d50dc873410" />
 

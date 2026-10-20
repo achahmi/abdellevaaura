@@ -183,7 +183,8 @@ rsync -avzh origen/ destino/
 
 La primera vez copia todo, así que es el backup completo
 
-> 📸 **Captura:** primera ejecución de rsync copiando los 10 ficheros
+> <img width="724" height="196" alt="image" src="https://github.com/user-attachments/assets/17fb240f-f2db-4f74-a828-15a2c5a9a25b" />
+
 
 #### Backup incremental con rsync
 

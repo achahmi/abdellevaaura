@@ -170,7 +170,10 @@ touch file{1..10}
 ls -l
 ```
 
-> 📸 **Captura:** creación de las carpetas y de los ficheros, con el `ls -l` de origen
+> <img width="456" height="76" alt="image" src="https://github.com/user-attachments/assets/8aaa8e06-82ce-489e-832f-d774f500671a" />
+
+<img width="403" height="250" alt="image" src="https://github.com/user-attachments/assets/ebdbb995-cc8c-4e99-bd93-187626e65504" />
+
 
 #### Backup completo con rsync
 

@@ -148,6 +148,13 @@ tar -xzvf inc1.tar.gz --listed-incremental=/dev/null -C restaurado/
 
 ## Parte práctica
 
+
+Antes de nada, en la maquina destino ponemos el hostname como "Destino"
+<img width="570" height="41" alt="image" src="https://github.com/user-attachments/assets/f147ba01-e9a9-44be-870a-dbe4a53644c1" />
+Luego, de instalar el ssh y configurarlo todo correctamente, nos hace ping!!:
+<img width="619" height="267" alt="image" src="https://github.com/user-attachments/assets/6d9492b7-8444-4371-8d76-14c74888d1a8" />
+
+
 ### (1) Copia en local con RSYNC y con TAR.GZ
 
 #### Preparar el entorno

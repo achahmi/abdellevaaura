@@ -154,6 +154,8 @@ Antes de nada, en la maquina destino ponemos el hostname como "Destino"
 Luego, de instalar el ssh y configurarlo todo correctamente, nos hace ping!!:
 <img width="619" height="267" alt="image" src="https://github.com/user-attachments/assets/6d9492b7-8444-4371-8d76-14c74888d1a8" />
 
+Además, podemos hacer ssh correctamente:
+<img width="733" height="357" alt="image" src="https://github.com/user-attachments/assets/eb875830-c4eb-4dc2-954c-5e7df404ba69" />
 
 ### (1) Copia en local con RSYNC y con TAR.GZ
 

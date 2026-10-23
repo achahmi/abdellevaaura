@@ -60,7 +60,13 @@ El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` co
 
 **Captura de pantalla:**
 
-_(pega aquí la captura)_
+<img width="585" height="63" alt="image" src="https://github.com/user-attachments/assets/2924f95b-88ce-4c28-a069-447016138751" />
+<img width="322" height="112" alt="image" src="https://github.com/user-attachments/assets/64af3cbb-22c7-40db-a790-b6331f4258e4" />
+<img width="344" height="101" alt="image" src="https://github.com/user-attachments/assets/c8a127ad-36d1-4f44-800c-941631c3128c" />
+<img width="536" height="96" alt="image" src="https://github.com/user-attachments/assets/432ad5e4-37f8-429c-84c6-46cd710daefd" />
+<img width="376" height="112" alt="image" src="https://github.com/user-attachments/assets/e020640f-cc84-4680-a7a7-ef2185a031a0" />
+<img width="614" height="336" alt="image" src="https://github.com/user-attachments/assets/5cf7656c-322c-40fb-9298-2debc3c36bbf" />
+
 
 ---
 
@@ -79,8 +85,14 @@ _(pega aquí la captura)_
 **Lo aprendido:** dar permiso de root sobre un programa genérico (`find`, `less`, `vim`, `awk`...) casi nunca es seguro, porque muchos de ellos permiten escapar a una shell. La web **GTFOBins** (gtfobins.org) recopila estos casos. Lo seguro es dar permiso solo sobre el script exacto que la persona necesita ejecutar.
 
 **Captura de pantalla:**
+<img width="580" height="170" alt="image" src="https://github.com/user-attachments/assets/d786ce77-3ac7-459d-b150-01e713ac37f8" />
+<img width="461" height="91" alt="image" src="https://github.com/user-attachments/assets/3411437a-c02c-4e81-86c2-7849bc8d6543" />
+<img width="345" height="48" alt="image" src="https://github.com/user-attachments/assets/14241cdc-5586-48d0-98a0-6059c37b47e8" />
+<img width="499" height="104" alt="image" src="https://github.com/user-attachments/assets/3dbe46c0-8b45-445f-a15c-bb7e3098d4f7" />
+**El ataque ya no funciona:**
+<img width="630" height="112" alt="image" src="https://github.com/user-attachments/assets/ed22aa3a-77ef-40f1-8f32-0b3d0cb73b3a" />
+<img width="405" height="106" alt="image" src="https://github.com/user-attachments/assets/78cbb7e8-33a0-4114-9a76-1b43a8edc9c1" />
 
-_(pega aquí la captura)_
 
 ---
 

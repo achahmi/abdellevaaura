@@ -34,7 +34,9 @@ El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` co
 
 **Captura de pantalla:**
 
-_(pega aquí la captura)_
+<img width="549" height="67" alt="image" src="https://github.com/user-attachments/assets/c656ac87-746e-4b6f-824f-fb33abb24470" />
+<img width="598" height="303" alt="image" src="https://github.com/user-attachments/assets/8fc2caf5-fd25-4939-a29e-e8a0128dec40" />
+
 
 ---
 

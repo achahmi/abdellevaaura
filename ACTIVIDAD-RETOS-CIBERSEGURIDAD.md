@@ -202,8 +202,19 @@ Si solo se cambia el usuario, un usuario sin privilegios seguiría pudiendo leer
 **Lo aprendido:** un servicio debe tener solo el usuario y el acceso a disco que necesita para hacer su trabajo. Publicar todo el disco (`/`) y ejecutar como root son dos errores que, juntos, convierten un fallo pequeño en un control total del sistema por parte del atacante.
 
 **Captura de pantalla:**
+<img width="552" height="70" alt="image" src="https://github.com/user-attachments/assets/b7e9f34a-a9b0-4d93-b246-20c4f7dae96a" />
 
-_(pega aquí la captura)_
+
+<img width="613" height="308" alt="image" src="https://github.com/user-attachments/assets/54fb5c49-2d00-4a7f-bd36-c2baf44dea47" />
+
+<img width="379" height="152" alt="image" src="https://github.com/user-attachments/assets/66a7a081-ff09-412c-b1de-8818e9acb3bd" />
+
+**He cambiado este archivo:**
+<img width="572" height="193" alt="image" src="https://github.com/user-attachments/assets/7ce8aa15-a4be-4241-b3f8-12e885b23598" />
+**Como se puede ver aqui, ya no tenemos acceso:**
+<img width="882" height="672" alt="image" src="https://github.com/user-attachments/assets/bb9bb01a-0113-4dbd-b595-69b1a42b0dd6" />
+
+<img width="269" height="61" alt="image" src="https://github.com/user-attachments/assets/e445ec3d-2144-4fa3-b0e3-dbab695212d0" />
 
 ---
 

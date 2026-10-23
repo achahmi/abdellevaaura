@@ -137,7 +137,15 @@ El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` co
 
 **Captura de pantalla:**
 
-_(pega aquí la captura)_
+<img width="632" height="134" alt="image" src="https://github.com/user-attachments/assets/3675c93c-a19d-47be-8979-cbae1fb13a30" />
+
+<img width="514" height="69" alt="image" src="https://github.com/user-attachments/assets/a3416459-b208-4604-afa6-3a324712208d" />
+
+<img width="593" height="69" alt="image" src="https://github.com/user-attachments/assets/fb277c97-1c88-4ce3-bd07-81d07b4fbcfa" />
+
+<img width="533" height="133" alt="image" src="https://github.com/user-attachments/assets/16729feb-19d8-4b25-b442-63e650ca5309" />
+
+<img width="386" height="73" alt="image" src="https://github.com/user-attachments/assets/9b526227-1a56-4b5a-b931-a011584b5eac" />
 
 ---
 
@@ -156,8 +164,14 @@ _(pega aquí la captura)_
 **Lo aprendido:** no basta con proteger el archivo del script; también hay que comprobar los permisos de la **carpeta** donde vive. Si la carpeta permite borrar y recrear archivos (por ejemplo con permiso de escritura para todos), un atacante podría borrar el script protegido y poner uno nuevo con su mismo nombre, aunque el archivo en sí estuviera bien protegido. Además, conviene preguntarse si la tarea necesita ejecutarse como root: en este caso, borrar archivos de `/tmp` no requiere privilegios de root.
 
 **Captura de pantalla:**
+**Borramos la linea "id > /tmp/quien_soy.txt"**
+<img width="456" height="91" alt="image" src="https://github.com/user-attachments/assets/1922de8c-f0c1-4145-9487-6a5346a07a48" />
 
-_(pega aquí la captura)_
+<img width="571" height="151" alt="image" src="https://github.com/user-attachments/assets/17b16db2-3d82-4432-a4d9-b63c0243998e" />
+
+<img width="410" height="52" alt="image" src="https://github.com/user-attachments/assets/7f72c9a3-313d-45cf-b1ee-87be6a66b24a" />
+
+<img width="357" height="50" alt="image" src="https://github.com/user-attachments/assets/0fc9223b-2735-487f-9691-08fb1dd99ab9" />
 
 ---
 

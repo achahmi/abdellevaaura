@@ -112,7 +112,12 @@ El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` co
 
 **Captura de pantalla:**
 
-_(pega aquí la captura)_
+<img width="414" height="131" alt="image" src="https://github.com/user-attachments/assets/3db3ed66-c727-4b7d-ac38-4fa8def87a13" />
+<img width="328" height="206" alt="image" src="https://github.com/user-attachments/assets/2f883c9d-b54d-4258-8338-f601c6d5a456" />
+<img width="365" height="48" alt="image" src="https://github.com/user-attachments/assets/68f69aa6-6bf7-41af-8e72-3ac3f62e677a" />
+<img width="362" height="58" alt="image" src="https://github.com/user-attachments/assets/0b9427e4-6af2-4c0b-a16a-3be7cb426252" />
+<img width="237" height="110" alt="image" src="https://github.com/user-attachments/assets/1223555f-2ffa-4eb1-97ab-cb8c0fde42e6" />
+
 
 ---
 

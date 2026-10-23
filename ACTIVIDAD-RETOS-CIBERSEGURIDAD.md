@@ -1,0 +1,186 @@
+# Actividad: Retos Ciberseguridad — Mínimo privilegio en Linux
+
+Laboratorio de hacking ético inicial en Kali Linux, basado en la guía *"7 retos de mínimo privilegio"* de Planeta FP. En cada reto, el script `retos.sh` configura mal a propósito una característica del sistema. Yo, como `becario` (usuario sin privilegios), ataco aprovechando ese fallo, y luego, como administrador, lo arreglo y compruebo que queda bien.
+
+## Ideas clave antes de empezar
+
+- **UID efectivo:** Linux decide qué puede hacer un proceso mirando el UID con el que se ejecuta. El UID `0` es el de `root`, que no tiene restricciones.
+- **Escalada de privilegios:** pasar de un usuario normal a root aprovechando una mala configuración. Es lo que se intenta en cada uno de estos retos.
+- **Mínimo privilegio:** cada usuario, programa o servicio debe tener solo los permisos que necesita para su trabajo, ni más ni menos.
+
+## Preparación del laboratorio
+
+1. Copié el script `retos.sh` a mi máquina Kali Linux (VMware).
+2. Hice una instantánea (snapshot) de la VM antes de empezar, por si hay que volver atrás.
+3. Le di permiso de ejecución: `chmod +x retos.sh`.
+
+El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` como el usuario `becario` (contraseña `Becario.2026`), `arreglar` el problema como administrador, y `comprobar` que queda bien resuelto con el propio script.
+
+---
+
+## Reto 1 · Permisos de ficheros (rwx)
+
+**La característica:** cada fichero de Linux tiene permisos para tres grupos: el dueño, el grupo y el resto de usuarios (otros). Cada uno puede leer, escribir o ejecutar.
+
+**El fallo:** el fichero de nóminas (`nominas.csv`) tenía permisos `666`, es decir, cualquier usuario de la máquina podía leerlo y modificarlo, aunque no fuera de RR. HH.
+
+**El ataque:** entré como `becario` y comprobé que podía leer el fichero (`cat`) y también añadirle una línea (`echo ... >>`), dándome de alta yo mismo con un IBAN falso.
+
+**La solución:** cambié los permisos para que solo el dueño y el grupo `rrhh` puedan leer y escribir, y quité todos los permisos a "otros". El comando es `chmod 660 nominas.csv`.
+
+**La comprobación:** `sudo bash retos.sh comprobar 1`. Debe confirmar que `becario` ya no puede leer ni escribir, pero que `ana_rrhh` (del grupo RR. HH.) sigue pudiendo.
+
+**Lo aprendido:** un permiso demasiado abierto (`666`) rompe la confidencialidad (cualquiera lee datos personales) y la integridad (cualquiera los modifica). Es tentador poner permisos amplios "para que no haya problemas", pero eso es justo lo contrario del mínimo privilegio.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Reto 2 · El grupo sudo
+
+**La característica:** cualquier usuario que esté en el grupo `sudo` puede ejecutar cualquier comando como root, con solo su propia contraseña.
+
+**El fallo:** el usuario `becario` estaba metido en el grupo `sudo` "para que ayude con todo".
+
+**El ataque:** con `id` comprobé que `becario` estaba en el grupo `sudo`, y con `sudo -i` entré como root usando la propia contraseña del becario.
+
+**La solución:** saqué a `becario` del grupo `sudo` con `gpasswd -d becario sudo`.
+
+**La comprobación:** `sudo bash retos.sh comprobar 2`. Comprueba que `becario` ya no pertenece a ningún grupo de administración.
+
+**Lo aprendido:** meter a alguien en el grupo `sudo` le da **todo** el poder de root, no solo lo que necesita. Si le roban la contraseña (por ejemplo con phishing), el atacante tiene control total de la máquina. Por eso, si `becario` tuviera una sesión ya abierta con privilegios de sudo activos, quitarlo del grupo no cerraría esa sesión al instante: habría que forzar el cierre de su sesión o esperar a que sudo pida la contraseña de nuevo.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Reto 3 · sudo para un programa "inofensivo"
+
+**La característica:** en `/etc/sudoers.d/` se pueden dar permisos de root limitados a un solo comando, en vez de a todos.
+
+**El fallo:** se le dio permiso a `becario` para ejecutar `find` como root sin contraseña, pensando que era inofensivo ("solo para que busque ficheros").
+
+**El ataque:** con `sudo -l` vi que podía ejecutar `find` como root. Muchos comandos aparentemente inofensivos, como `find`, tienen una opción para lanzar otro programa (`-exec`), y así pude abrir una shell de root: `sudo find /tmp -maxdepth 0 -exec /bin/bash \;`.
+
+**La solución:** cambié la regla de sudoers para que `becario` solo pueda ejecutar el script concreto que necesita (`/usr/local/sbin/limpiar_tmp.sh`), y no el comando `find` entero. Se edita con `visudo -f /etc/sudoers.d/reto3` para evitar errores de sintaxis.
+
+**La comprobación:** `sudo bash retos.sh comprobar 3`. Comprueba que ya no puede ejecutar un comando que abra una shell, pero que sí puede seguir ejecutando el script que necesita para su trabajo.
+
+**Lo aprendido:** dar permiso de root sobre un programa genérico (`find`, `less`, `vim`, `awk`...) casi nunca es seguro, porque muchos de ellos permiten escapar a una shell. La web **GTFOBins** (gtfobins.org) recopila estos casos. Lo seguro es dar permiso solo sobre el script exacto que la persona necesita ejecutar.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Reto 4 · El bit SUID
+
+**La característica:** un ejecutable con el bit SUID activado (la `s` en `-rwsr-xr-x`) se ejecuta con los permisos de su **dueño**, no de quien lo lanza. Por ejemplo, `passwd` lo necesita para poder cambiar `/etc/shadow`, que es un archivo solo de root.
+
+**El fallo:** se hizo una copia de `cat` (llamada `verlog`) y se le puso el bit SUID de root, "para que todos pudieran ver los logs".
+
+**El ataque:** busqué los binarios con SUID activado (`find / -perm -4000 -type f`) y encontré `verlog`, que no es un programa del sistema. Al ejecutar `verlog /etc/shadow`, pude leer un archivo que normalmente solo puede leer root.
+
+**La solución:** quité el bit SUID con `chmod u-s /usr/local/bin/verlog` (o directamente borré el binario, que es lo más seguro si no se necesita).
+
+**La comprobación:** `sudo bash retos.sh comprobar 4`. Comprueba que no quedan binarios con SUID fuera de las carpetas propias del sistema.
+
+**Lo aprendido:** una copia de un programa del sistema con SUID es tan peligrosa como el original, porque sigue haciendo lo mismo pero con permisos de root. Por eso una copia de `bash` con SUID no daría root "directamente" de forma fiable: `bash` (y muchos programas modernos) detecta si el UID real y el UID efectivo no coinciden y, por seguridad, puede ignorar el SUID; en cambio `cat`, al ser un programa simple, sí respeta el SUID y por eso funciona el ataque.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Reto 5 · Capabilities
+
+**La característica:** en vez de dar todo el poder de root, Linux permite repartirlo en piezas sueltas llamadas *capabilities* (por ejemplo `cap_net_raw`, `cap_setuid`). Se pueden dar capabilities concretas a un programa sin hacerlo SUID completo.
+
+**El fallo:** se hizo una copia de `python3` y se le dio la capability `cap_setuid`, "para un script de mantenimiento".
+
+**El ataque:** con `getcap -r /` localicé el binario con la capability sospechosa. Con `cap_setuid`, un programa puede cambiar su propio UID a `0` (root) sin que nadie se lo pida. Ejecutando `pyherramienta -c 'import os; os.setuid(0); os.system("id")'` pasé a ser root.
+
+**La solución:** quité la capability con `setcap -r /usr/local/bin/pyherramienta` (o borré el binario).
+
+**La comprobación:** `sudo bash retos.sh comprobar 5`. Comprueba que no queden capabilities peligrosas fuera de las carpetas del sistema.
+
+**Lo aprendido:** las capabilities parecen "más seguras" que el SUID porque dan menos poder, pero algunas, como `cap_setuid`, equivalen en la práctica a dar root entero. Hay que tratarlas con el mismo cuidado que el bit SUID.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Reto 6 · Tareas programadas (cron)
+
+**La característica:** `cron` ejecuta tareas de forma automática con el usuario que se indique en `/etc/cron.d/`. Si se indica `root`, la tarea corre con todos sus privilegios.
+
+**El fallo:** un script que cron ejecutaba cada minuto **como root** tenía permisos `777`, es decir, cualquier usuario podía editarlo.
+
+**El ataque:** comprobé que el script era editable por cualquiera (`ls -l`) y le añadí una línea (`echo 'id > /tmp/quien_soy.txt' >> script`). Al minuto siguiente, cron ejecutó mi línea añadida como root, y el archivo resultante lo demostró.
+
+**La solución:** cambié el dueño del script a `root` y los permisos para que solo root pueda escribir (`chown root:root` y `chmod 755`, o similar), y quité la línea que había añadido el atacante.
+
+**La comprobación:** `sudo bash retos.sh comprobar 6`. Comprueba que el script sigue existiendo, que `becario` ya no puede escribir en él y que la línea añadida ya no está.
+
+**Lo aprendido:** no basta con proteger el archivo del script; también hay que comprobar los permisos de la **carpeta** donde vive. Si la carpeta permite borrar y recrear archivos (por ejemplo con permiso de escritura para todos), un atacante podría borrar el script protegido y poner uno nuevo con su mismo nombre, aunque el archivo en sí estuviera bien protegido. Además, conviene preguntarse si la tarea necesita ejecutarse como root: en este caso, borrar archivos de `/tmp` no requiere privilegios de root.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Reto 7 · Servicios ejecutados como root
+
+**La característica:** cada servicio gestionado por `systemd` se ejecuta con un usuario concreto (campo `User=`). Si ese usuario es root y el servicio tiene un fallo, el atacante que lo explote obtiene directamente privilegios de root.
+
+**El fallo:** un servicio web (una "intranet") corría como root y, en vez de publicar solo la carpeta de la web, publicaba **todo el disco** (`--directory /`).
+
+**El ataque:** desde el navegador, accediendo a `http://IP:8080/etc/shadow`, pude descargar el archivo de contraseñas del sistema sin ninguna autenticación.
+
+**La solución:** hay que hacer **dos cambios a la vez**, porque uno solo no basta:
+1. Crear un usuario sin privilegios para el servicio (`useradd -r -s /usr/sbin/nologin intranet`) y ponerlo en `User=` dentro de `/etc/systemd/system/intranet.service`.
+2. Cambiar `--directory /` por `--directory /srv/web`, para que solo publique la carpeta de la intranet y no todo el disco.
+
+Si solo se cambia el usuario, un usuario sin privilegios seguiría pudiendo leer y servir cualquier archivo del disco que tenga permiso de lectura para "otros" (como ocurre con muchos archivos de configuración), así que el problema de fondo seguiría existiendo. Si solo se cambia la carpeta pero el servicio sigue como root, cualquier fallo futuro del programa daría directamente privilegios de root al atacante. Después de editar, hay que recargar systemd: `systemctl daemon-reload` y `systemctl restart intranet`.
+
+**La comprobación:** `sudo bash retos.sh comprobar 7`. Comprueba que el servicio sigue funcionando, que ya no corre como root y que `/etc/shadow` ya no se puede descargar.
+
+**Lo aprendido:** un servicio debe tener solo el usuario y el acceso a disco que necesita para hacer su trabajo. Publicar todo el disco (`/`) y ejecutar como root son dos errores que, juntos, convierten un fallo pequeño en un control total del sistema por parte del atacante.
+
+**Captura de pantalla:**
+
+_(pega aquí la captura)_
+
+---
+
+## Resumen
+
+| Reto | Característica | Lo que conseguía el atacante |
+| --- | --- | --- |
+| 1 | Permisos rwx | Leer y alterar datos personales |
+| 2 | Grupo sudo | Root con su propia contraseña |
+| 3 | Reglas de sudoers | Shell de root |
+| 4 | Bit SUID | Leer `/etc/shadow` y cualquier fichero |
+| 5 | Capabilities | Convertirse en root |
+| 6 | cron | Ejecutar comandos como root cada minuto |
+| 7 | Usuario del servicio | Descargar `/etc/shadow` sin contraseña |
+
+Seis de los siete retos acaban dando privilegios de root al atacante. El séptimo acaba en la fuga de datos personales. Esto es lo que se llama **escalada de privilegios**: pasar de un usuario sin apenas permisos a tener control total (o casi) del sistema, aprovechando una configuración demasiado permisiva.
+
+## Fuentes
+
+- GTFOBins (abuso de binarios: `find`, `less`, `vim`...): gtfobins.org
+- Manual de sudoers: sudo.ws/docs/man/sudoers.man
+- capabilities(7): man7.org/linux/man-pages/man7/capabilities.7.html
+- Python `http.server`, advertencias de seguridad: docs.python.org/3/library/http.server.html
+- MITRE ATT&CK (T1548, T1053.003, T1565.001): attack.mitre.org
+- `systemd.exec` (`User=`, `NoNewPrivileges=`, `ProtectSystem=`): `man systemd.exec`

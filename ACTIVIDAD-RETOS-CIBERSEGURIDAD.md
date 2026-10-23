@@ -173,6 +173,14 @@ El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` co
 
 <img width="357" height="50" alt="image" src="https://github.com/user-attachments/assets/0fc9223b-2735-487f-9691-08fb1dd99ab9" />
 
+<img width="531" height="61" alt="image" src="https://github.com/user-attachments/assets/efa883d7-d3dc-4bc7-a155-111d0865595c" />
+
+<img width="486" height="141" alt="image" src="https://github.com/user-attachments/assets/b37b7326-1f91-46b4-9e2e-445bbbbc80ed" />
+
+<img width="573" height="47" alt="image" src="https://github.com/user-attachments/assets/7a5490af-895c-4863-b8d7-1fab807fb0a1" />
+
+<img width="248" height="106" alt="image" src="https://github.com/user-attachments/assets/c8abd265-b99f-42ce-b0a3-42ea8a3431c1" />
+
 ---
 
 ## Reto 7 · Servicios ejecutados como root

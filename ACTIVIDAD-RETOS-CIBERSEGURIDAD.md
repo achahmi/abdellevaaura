@@ -36,6 +36,10 @@ El ciclo de trabajo que repito en cada reto es: `preparar` el fallo, `atacar` co
 
 <img width="549" height="67" alt="image" src="https://github.com/user-attachments/assets/c656ac87-746e-4b6f-824f-fb33abb24470" />
 <img width="598" height="303" alt="image" src="https://github.com/user-attachments/assets/8fc2caf5-fd25-4939-a29e-e8a0128dec40" />
+<img width="363" height="51" alt="image" src="https://github.com/user-attachments/assets/7007a353-098c-474b-a55f-e8413a3d8ff9" />
+
+**sudo -u ana_rrhh cat /srv/empresa/nominas.csv** aqui la captura:
+<img width="432" height="128" alt="image" src="https://github.com/user-attachments/assets/1e77dae8-fc3c-4943-85f3-489d6bf7e7b6" />
 
 
 ---

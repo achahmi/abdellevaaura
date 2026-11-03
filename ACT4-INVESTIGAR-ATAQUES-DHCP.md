@@ -138,7 +138,8 @@ Configuración del adaptador de red de Kali en modo promiscuo ("Permitir todo") 
 
 **Captura:**
 
-_(pega aquí la captura)_
+<img width="565" height="384" alt="image" src="https://github.com/user-attachments/assets/8cbc8e38-7078-4fc0-a469-5ac7632fb4ed" />
+
 
 ### 5.2 Ataque de DHCP Starvation
 

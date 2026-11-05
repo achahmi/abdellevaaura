@@ -34,7 +34,8 @@ Tres máquinas virtuales en VirtualBox:
 
 Configuración de los tres adaptadores de red en VirtualBox:
 
-![Configuración de red de las tres VMs](imagenes/act5-config-red-vms.png)
+<img width="802" height="535" alt="image" src="https://github.com/user-attachments/assets/6706ca9d-5306-4878-854c-d1906c2b76de" />
+
 
 ---
 

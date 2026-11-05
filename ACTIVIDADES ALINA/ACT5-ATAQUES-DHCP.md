@@ -52,7 +52,8 @@ Verificamos la asignación:
 ip a
 ```
 
-![Cliente legítimo obteniendo IP](imagenes/act5-cliente-ip-normal.png)
+<img width="601" height="348" alt="image" src="https://github.com/user-attachments/assets/326cbf2f-b223-4de3-99d3-b9713c061a67" />
+
 
 Desde la VM 2, comprobamos las asignaciones en caliente:
 

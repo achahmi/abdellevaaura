@@ -61,8 +61,8 @@ Desde la VM 2, comprobamos las asignaciones en caliente:
 ```bash
 cat /var/lib/dhcp/dhcpd.leases
 ```
+<img width="710" height="173" alt="image" src="https://github.com/user-attachments/assets/955d5776-3a11-4dfc-9354-b608a5db8fa7" />
 
-![Fichero de leases del servidor](imagenes/act5-leases-cliente-normal.png)
 
 **¿Qué tendríamos que hacer si queremos monitorizar la red con Wireshark?** Habría que abrir Wireshark en una de las máquinas con visibilidad sobre el segmento (en nuestro caso, en Kali, gracias al modo promiscuo activado en la Red Interna), seleccionar la interfaz conectada a esa red y aplicar un filtro `dns` → en este caso `bootp || dhcp`, para quedarnos solo con el tráfico DHCP y poder distinguir los cuatro mensajes del DORA.
 

@@ -136,7 +136,8 @@ En la VM 2, consultamos el número de leases asignados de golpe:
 cat /var/lib/dhcp/dhcpd.leases | grep "lease " | wc -l
 ```
 
-![Pool de direcciones agotado](imagenes/act5-leases-agotado.png)
+<img width="746" height="124" alt="image" src="https://github.com/user-attachments/assets/ab9c560b-5010-4a4e-89f3-5a491630ec18" />
+
 
 En la VM 3, liberamos e intentamos solicitar una IP:
 

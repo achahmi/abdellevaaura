@@ -123,7 +123,8 @@ Lo ejecutamos con permisos de root:
 sudo python3 starvation.py
 ```
 
-![Script starvation.py en ejecución](imagenes/act5-scapy-ataque.png)
+<img width="421" height="109" alt="image" src="https://github.com/user-attachments/assets/350277a3-47e2-424c-a5ed-42db2c0f132b" />
+
 
 ---
 

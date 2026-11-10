@@ -86,7 +86,8 @@ sudo yersinia -I
 
 Dentro: `g` para seleccionar el protocolo DHCP, `x` para listar ataques y elegimos la opción de envío de paquetes DISCOVER. Lo dejamos actuar unos 15 segundos y pulsamos `L` para detener.
 
-![Yersinia generando DHCPDISCOVER con MACs aleatorias](imagenes/act5-yersinia-ataque.png)
+<img width="534" height="93" alt="image" src="https://github.com/user-attachments/assets/176076dd-bfb4-4298-8e06-df4e23f4a1b3" />
+
 
 ### Método B: script en Python con Scapy
 

@@ -5,7 +5,7 @@
 | **Práctica** | Protocolo DHCP - Simulación DHCP Starvation |
 | **Módulo** | 037 Seguridad en servicios |
 | **Ciclo Formativo** | ASIX |
-| **Alumno** | Abdellah Chahmi |
+| **Alumnos** | Abdellah Chahmi, Eric Reinaldo |
 
 ## Objetivo
 
@@ -166,7 +166,6 @@ sudo iptables -A INPUT -i eth1 -p udp --dport 67 \
   -j DROP
 ```
 
-![Regla de hashlimit aplicada](imagenes/act5-iptables-hashlimit.png)
 
 ### Mitigación B: impedir el abuso por falsificación de `chaddr`
 
@@ -182,7 +181,6 @@ Y añadimos:
 deny unknown-clients;
 ```
 
-![Configuración dhcpd.conf con deny unknown-clients](imagenes/act5-dhcpd-conf-deny.png)
 
 ---
 
@@ -203,7 +201,7 @@ Ejecutamos de nuevo `starvation.py` en Kali y observamos las estadísticas de re
 sudo iptables -L INPUT -v -n
 ```
 
-![Contador de paquetes bloqueados por hashlimit](imagenes/act5-iptables-contador.png)
+
 
 En la VM 3, intentamos conseguir una IP:
 
@@ -211,7 +209,6 @@ En la VM 3, intentamos conseguir una IP:
 sudo dhclient -v enp0s3
 ```
 
-![Cliente legítimo obteniendo IP tras la mitigación](imagenes/act5-cliente-ip-tras-mitigacion.png)
 
 ---
 

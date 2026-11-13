@@ -37,7 +37,8 @@ sudo systemctl status nginx --no-pager
 curl -I http://127.0.0.1
 ```
 
-**Captura 2 — Nginx funcionando:** [añadir captura del estado `active (running)` y de la respuesta HTTP obtenida con `curl`]
+**Captura 2 — Nginx funcionando:** <img width="946" height="778" alt="image" src="https://github.com/user-attachments/assets/6660a1c6-ce77-49d5-8877-d79fccb3698c" />
+
 
 ## 4. Creación del perfil de AppArmor
 

@@ -57,7 +57,11 @@ curl http://127.0.0.1/ > /dev/null
 
 Después volví a `aa-genprof`, analicé los eventos con la opción de escanear los registros, acepté solo los permisos que necesitaba Nginx y guardé el perfil generado.
 
-**Captura 3 — Generación del perfil:** [añadir captura de `aa-genprof` con el análisis de accesos o las propuestas de permisos]
+**Captura 3 — Generación del perfil:** 
+<img width="536" height="470" alt="image" src="https://github.com/user-attachments/assets/f63a3adc-d2aa-4d04-b44e-ba52909a6bba" />
+
+
+
 
 ## 5. Modo complain y revisión de los registros
 

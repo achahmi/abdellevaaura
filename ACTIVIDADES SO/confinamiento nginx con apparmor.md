@@ -6,11 +6,11 @@ En esta práctica voy a instalar y comprobar Nginx en Linux, crear un perfil de 
 
 ## 2. Entorno utilizado
 
-- Sistema operativo: **[indicar distribución y versión]**
-- Máquina: **[virtual o física]**
+- Sistema operativo: **Kali Linux**
+- Máquina: **Virtual**
 - Servidor web: **Nginx**
 - Herramienta de seguridad: **AppArmor**
-- Dirección IP utilizada: **[indicar IP]**
+- Dirección IP utilizada: **192.168.111.58/24**
 
 Comandos para consultar el entorno:
 
@@ -21,7 +21,8 @@ nginx -v
 sudo aa-status
 ```
 
-**Captura 1 — Sistema y entorno:** [añadir captura donde se vean los datos del sistema y/o el estado de AppArmor]
+<img width="696" height="539" alt="image" src="https://github.com/user-attachments/assets/7f9b8c73-baeb-48e6-816d-28e1d26c9f88" />
+
 
 ## 3. Instalación y configuración inicial de Nginx
 

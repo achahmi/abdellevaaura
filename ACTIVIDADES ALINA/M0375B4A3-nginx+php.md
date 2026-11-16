@@ -1,11 +1,11 @@
 # M0375B4A3 - Nginx + PHP
 
 ## Objetivo
-Configurar Nginx con dos webs estáticas que compartan el puerto 80 pero tengan dominios diferentes, una zona protegida con contraseña, una web dinámica con PHP y otra con PHP y MySQL/MariaDB. Comprobar cada apartado y documentar las pruebas.
+En esta actividad voy a montar varias páginas con Nginx. Primero haré dos webs diferentes que utilicen el puerto 80, después pondré una zona con contraseña y por último prepararé una web con PHP y otra que saque información de una base de datos. Iré comprobando cada parte para ver que funciona.
 
-> **Estado:** guía de realización. Las capturas y resultados se añadirán al hacer la práctica. El documento adjunto pide PHP, base de datos, pruebas e incidencias; también se incluyen los requisitos adicionales de la rúbrica de clase.
+> **Pendiente:** iré añadiendo las capturas y los resultados reales a medida que haga la actividad.
 
-## Entorno
+## Entorno que voy a utilizar
 - Sistema: Kali Linux (Debian)
 - Servidor: Nginx
 - PHP: PHP-FPM
@@ -13,7 +13,9 @@ Configurar Nginx con dos webs estáticas que compartan el puerto 80 pero tengan 
 - Dominios locales de ejemplo: `web1.test`, `web2.test`, `php.test`, `db.test`
 - IP: 127.0.0.1 para pruebas en la misma máquina
 
-## 1. Instalar paquetes y comprobar servicios
+## 1. Instalación de lo necesario
+
+Para empezar voy a instalar Nginx, PHP y MariaDB, que es la base de datos que utilizaré. También instalaré la herramienta que me permitirá poner una contraseña en una parte de la web.
 
 ```bash
 sudo apt update
@@ -23,13 +25,13 @@ sudo systemctl status nginx --no-pager
 ls /run/php/php*-fpm.sock
 ```
 
-Si PHP-FPM no está activo, identificar el servicio con `systemctl list-units 'php*-fpm.service'` y arrancarlo con `sudo systemctl enable --now NOMBRE_DEL_SERVICIO`.
+Si PHP-FPM no aparece funcionando, miraré el nombre de su servicio con `systemctl list-units 'php*-fpm.service'` y lo arrancaré con `sudo systemctl enable --now NOMBRE_DEL_SERVICIO`.
 
-**Captura 1:** Nginx activo, versión/servicio de PHP-FPM y MariaDB.
+**Captura 1 — aquí pondré:** Nginx activo, versión/servicio de PHP-FPM y MariaDB.
 
-## 2. Dos webs estáticas, dos dominios, mismo puerto 80
+## 2. Crear dos webs con el mismo puerto 80
 
-Crear directorios y páginas:
+Primero voy a crear dos carpetas diferentes y pondré un archivo HTML en cada una para poder distinguir las páginas.
 
 ```bash
 sudo mkdir -p /var/www/web1 /var/www/web2
@@ -37,7 +39,7 @@ echo '<h1>WEB 1 - ESTATICA</h1>' | sudo tee /var/www/web1/index.html
 echo '<h1>WEB 2 - ESTATICA</h1>' | sudo tee /var/www/web2/index.html
 ```
 
-Crear el primer sitio:
+Ahora voy a crear la configuración de la primera web:
 
 ```bash
 sudo nano /etc/nginx/sites-available/web1
@@ -52,7 +54,7 @@ server {
 }
 ```
 
-Crear el segundo sitio:
+Después haré lo mismo con la segunda web:
 
 ```bash
 sudo nano /etc/nginx/sites-available/web2
@@ -67,7 +69,7 @@ server {
 }
 ```
 
-Activar y probar:
+Cuando tenga las dos configuraciones, las activaré y añadiré los nombres de las webs al archivo `hosts` para poder abrirlas desde mi propia máquina:
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/web1 /etc/nginx/sites-enabled/
@@ -79,14 +81,14 @@ curl http://web1.test
 curl http://web2.test
 ```
 
-**Explicación:** los dos sitios escuchan en el puerto 80. Nginx elige la web según el nombre de dominio recibido en la petición (`server_name`). Si se accede desde otro equipo, se debe configurar su resolución DNS o archivo hosts con la IP real del servidor.
+Las dos webs utilizan el puerto 80, pero tienen nombres diferentes. Nginx sabe cuál tiene que mostrar gracias al `server_name`. Si quisiera abrirlas desde otro ordenador, tendría que configurar allí los nombres para que apunten a la IP del servidor.
 
-**Captura 2:** configuraciones `web1` y `web2` con `listen 80`.
-**Captura 3:** ambas páginas abiertas en navegador, mostrando dominios distintos.
+**Captura 2 — aquí pondré:** configuraciones `web1` y `web2` con `listen 80`.
+**Captura 3 — aquí pondré:** ambas páginas abiertas en navegador, mostrando dominios distintos.
 
-## 3. Zona protegida con contraseña
+## 3. Poner contraseña a una parte de la web
 
-Crear un directorio privado en la primera web:
+En esta parte voy a crear una carpeta privada dentro de la primera web. La idea es que no se pueda entrar sin poner un usuario y una contraseña.
 
 ```bash
 sudo mkdir -p /var/www/web1/privado
@@ -94,15 +96,15 @@ echo '<h1>ZONA PROTEGIDA</h1>' | sudo tee /var/www/web1/privado/index.html
 sudo htpasswd -c /etc/nginx/.htpasswd alumno
 ```
 
-Introducir una contraseña cuando se solicite. **No subir la contraseña ni el archivo .htpasswd al repositorio.**
+Cuando me pida la contraseña, pondré una que recuerde. No voy a subirla ni a subir el archivo `.htpasswd` a GitHub.
 
-Editar el sitio:
+Después abriré la configuración de la primera web:
 
 ```bash
 sudo nano /etc/nginx/sites-available/web1
 ```
 
-Añadir dentro de `server { ... }`:
+Dentro del bloque `server` añadiré esto para proteger la carpeta:
 
 ```nginx
 location /privado/ {
@@ -111,7 +113,7 @@ location /privado/ {
 }
 ```
 
-Probar:
+Para comprobarlo, revisaré la configuración y probaré a entrar:
 
 ```bash
 sudo nginx -t
@@ -119,14 +121,14 @@ sudo systemctl reload nginx
 curl -I http://web1.test/privado/
 ```
 
-Debe devolver `401 Unauthorized` sin credenciales. En el navegador abrir `http://web1.test/privado/` e iniciar sesión con el usuario `alumno` y la contraseña creada.
+Si entro sin identificarme, debería aparecer `401 Unauthorized`. Después entraré desde el navegador con el usuario `alumno` y la contraseña que haya creado para comprobar que sí me deja pasar.
 
-**Captura 4:** petición sin credenciales con 401 o ventana de autenticación.
-**Captura 5:** acceso correcto a la zona protegida.
+**Captura 4 — aquí pondré:** petición sin credenciales con 401 o ventana de autenticación.
+**Captura 5 — aquí pondré:** acceso correcto a la zona protegida.
 
-## 4. Web dinámica con PHP
+## 4. Crear una web con PHP
 
-Crear el directorio y archivo:
+Ahora voy a hacer una página que utilice PHP. En vez de mostrar solamente HTML, pondré un ejemplo que enseñe la fecha y la hora del servidor.
 
 ```bash
 sudo mkdir -p /var/www/php
@@ -140,13 +142,13 @@ echo "<p>Fecha del servidor: " . date("d/m/Y H:i:s") . "</p>";
 ?>
 ```
 
-Identificar el socket PHP-FPM:
+Antes de configurar Nginx miraré qué versión de PHP-FPM tengo instalada:
 
 ```bash
 ls /run/php/php*-fpm.sock
 ```
 
-Crear el sitio:
+Después crearé la configuración de esta web:
 
 ```bash
 sudo nano /etc/nginx/sites-available/php
@@ -170,7 +172,7 @@ server {
 }
 ```
 
-**Importante:** sustituir `php8.4-fpm.sock` por el nombre exacto mostrado por `ls`; puede variar según la versión instalada.
+Aquí tendré que cambiar `php8.4-fpm.sock` si en mi máquina aparece otra versión. Utilizaré el nombre que me haya mostrado el comando anterior.
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/php /etc/nginx/sites-enabled/
@@ -179,18 +181,20 @@ sudo systemctl reload nginx
 curl http://php.test
 ```
 
-**Captura 6:** configuración PHP-FPM de Nginx y página mostrando la fecha generada por PHP.
+**Captura 6 — aquí pondré:** configuración PHP-FPM de Nginx y página mostrando la fecha generada por PHP.
 
-## 5. Web PHP + base de datos MariaDB/MySQL
+## 5. Conectar una web PHP a una base de datos
 
-Iniciar la base de datos y entrar:
+En esta parte voy a crear una base de datos con unos productos de ejemplo. Después haré que PHP los lea y los muestre en una página.
+
+Primero arrancaré MariaDB y entraré:
 
 ```bash
 sudo systemctl enable --now mariadb
 sudo mariadb
 ```
 
-Ejecutar dentro de MariaDB:
+Dentro de MariaDB crearé la base de datos, un usuario para consultar los datos y una tabla con tres productos:
 
 ```sql
 CREATE DATABASE actividad_nginx;
@@ -205,7 +209,7 @@ INSERT INTO productos (nombre) VALUES ('Teclado'), ('Raton'), ('Monitor');
 EXIT;
 ```
 
-Crear la web:
+Cuando esté lista la tabla, crearé la página PHP:
 
 ```bash
 sudo mkdir -p /var/www/db
@@ -234,7 +238,7 @@ try {
 ?>
 ```
 
-**Seguridad:** usar la misma contraseña segura en SQL y PHP. Este ejemplo la coloca en el archivo para facilitar la práctica; no subir el PHP con credenciales reales a un repositorio público. Para un proyecto real, almacenar la contraseña fuera del directorio web o en variables de entorno.
+Pondré la misma contraseña segura donde aparece `CAMBIAR_POR_CONTRASENA_SEGURA` en los dos ejemplos. No subiré una contraseña real a GitHub. Si esto fuera una web real, guardaría esa contraseña fuera de la carpeta pública.
 
 Crear el sitio:
 
@@ -260,7 +264,7 @@ server {
 }
 ```
 
-Sustituir el nombre del socket por el que realmente existe.
+Igual que antes, cambiaré el nombre del socket de PHP si mi versión es diferente.
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/db /etc/nginx/sites-enabled/
@@ -269,12 +273,14 @@ sudo systemctl reload nginx
 curl http://db.test
 ```
 
-Si la conexión falla, comprobar `sudo systemctl status mariadb`, `sudo systemctl status nginx` y `sudo tail -n 30 /var/log/nginx/error.log`.
+Si la página no consigue conectar con la base de datos, revisaré los servicios con `sudo systemctl status mariadb` y `sudo systemctl status nginx`, y miraré los errores con `sudo tail -n 30 /var/log/nginx/error.log`.
 
-**Captura 7:** tabla `productos` con los tres registros desde MariaDB.
-**Captura 8:** página `db.test` mostrando los productos obtenidos de la base de datos.
+**Captura 7 — aquí pondré:** tabla `productos` con los tres registros desde MariaDB.
+**Captura 8 — aquí pondré:** página `db.test` mostrando los productos obtenidos de la base de datos.
 
-## 6. Comprobaciones finales
+## 6. Comprobar que todo funciona
+
+Cuando tenga todas las webs preparadas, voy a comprobar que Nginx no tiene errores y que cada dirección responde:
 
 ```bash
 sudo nginx -t
@@ -285,19 +291,19 @@ curl -I http://php.test
 curl -I http://db.test
 ```
 
-Las webs públicas deberían responder con HTTP 200; la zona privada, sin credenciales, debería responder HTTP 401. Abrir cada sitio en el navegador para comprobar el contenido.
+Las páginas normales deberían responder con `200 OK`, mientras que la zona protegida debería devolver `401 Unauthorized` si no pongo contraseña. También abriré las webs en el navegador para ver que muestran el contenido correcto.
 
-**Captura 9:** pruebas finales de las cuatro webs y zona protegida.
+**Captura 9 — aquí pondré:** pruebas finales de las cuatro webs y zona protegida.
 
-## 7. Incidencias
+## 7. Problemas que me hayan salido
 
-- **Incidencia encontrada:** [escribir el error real, si aparece]
-- **Cómo se solucionó:** [comandos y cambios aplicados]
-- **Resultado:** [explicar si todo funciona]
+- **Problema:** [aquí explicaré el error que me haya salido]
+- **Qué hice para arreglarlo:** [pondré los comandos o cambios que utilicé]
+- **Cómo quedó:** [explicaré si finalmente funcionó]
 
 ## 8. Conclusión
 
-En esta práctica se configuran varias webs en Nginx usando dominios diferentes sobre el mismo puerto 80. También se protege una zona mediante usuario y contraseña, se ejecuta una página PHP con PHP-FPM y se conecta otra página PHP a una base de datos para mostrar información. Las capturas finales servirán para demostrar cada apartado una vez realizado.
+Con esta actividad quiero aprender a tener varias webs en Nginx utilizando el mismo puerto, proteger una carpeta con contraseña y hacer páginas que funcionen con PHP y con una base de datos. Cuando termine las pruebas, añadiré aquí el resultado final y las capturas para enseñar que cada parte funciona.
 
 ## Rúbrica de clase
 
@@ -307,4 +313,4 @@ En esta práctica se configuran varias webs en Nginx usando dominios diferentes 
 - [ ] Web con PHP + MySQL/MariaDB — **3 puntos**
 - [ ] Explicación en GitHub y evidencias — **2 puntos**
 
-> La rúbrica de clase indicada para esta entrega es de 8 puntos prácticos y 2 escritos; el documento adjunto incluye una rúbrica anterior distinta. Las evidencias están pendientes de ejecutar y subir.
+> Esta es la rúbrica que nos han dado en clase. Iré marcando cada apartado cuando lo tenga hecho y añadiré las capturas correspondientes.

@@ -76,15 +76,22 @@ sudo journalctl -k --no-pager | grep -i apparmor | tail -n 30
 
 En los registros busqué entradas relacionadas con `nginx` y `apparmor`, especialmente eventos con `apparmor="ALLOWED"` en modo complain. Si no aparecían eventos, revisé los registros después de hacer más peticiones: **no se deben inventar registros**.
 
-**Captura 4 — Modo complain:** [añadir captura de `aa-status` indicando el perfil de Nginx en complain]
+**Captura 4 — Modo complain:** 
+<img width="653" height="399" alt="image" src="https://github.com/user-attachments/assets/469c27de-91f8-4016-ba32-1aeddbb9766b" />
 
-**Captura 5 — Registros reales:** [añadir captura de las líneas de AppArmor encontradas en `journalctl` o, si no aparecen, del resultado de la comprobación y explicar la ausencia de eventos]
 
-**Eventos observados:** [pegar aquí 2-5 líneas reales de registro o explicar que no se detectaron nuevos eventos]
+**Captura 5 — Registros reales:** 
+<img width="936" height="747" alt="image" src="https://github.com/user-attachments/assets/76472e24-0ec6-4689-b362-ed6b091f6cfe" />
 
-```text
-[PEGAR AQUÍ LOS REGISTROS REALES]
-```
+
+**Eventos observados:** 
+
+nov 16 15:24:26 kali kernel: audit: type=1400 audit(1794839066.938:219): apparmor="ALLOWED" operation="open" class="file" profile="/usr/sbin/nginx" name="/etc/nginx/sites-enabled/" pid=8641 comm="nginx" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+
+nov 16 15:24:32 kali kernel: audit: type=1400 audit(1794839072.002:280): apparmor="ALLOWED" operation="accept" class="net" profile="/usr/sbin/nginx" pid=8646 comm="nginx" lport=80 family="inet" sock_type="stream" protocol=6 requested_mask="accept" denied_mask="accept"
+
+nov 16 15:24:32 kali kernel: audit: type=1400 audit(1794839072.002:281): apparmor="ALLOWED" operation="recvmsg" class="net" profile="/usr/sbin/nginx" pid=8646 comm="nginx" laddr=127.0.0.1 lport=80 faddr=127.0.0.1 fport=43460 family="inet" sock_type="stream" protocol=6 requested_mask="receive" denied_mask="receive"
+
 
 ## 6. Ajuste y perfil resultante
 
@@ -95,15 +102,28 @@ sudo aa-logprof
 sudo cat /etc/apparmor.d/usr.sbin.nginx
 ```
 
-**Captura 6 — Perfil ajustado:** [añadir captura de `aa-logprof` y/o del contenido del perfil]
+**Captura 6 — Perfil ajustado:** 
+<img width="409" height="271" alt="image" src="https://github.com/user-attachments/assets/2a12feb6-445d-41ce-a77b-f106a37dc437" />
+
 
 ### Perfil final obtenido
 
-> Sustituir el siguiente bloque por el **contenido real** del archivo `/etc/apparmor.d/usr.sbin.nginx` después de ajustarlo. No se incluye un perfil inventado porque las reglas dependen de los registros y del sistema utilizado.
+ sudo cat /etc/apparmor.d/usr.sbin.nginx
+Last Modified: Mon Nov 16 15:34:45 2026
+abi <abi/4.0>,
 
-```apparmor
-[PEGAR AQUÍ EL PERFIL REAL GENERADO Y AJUSTADO]
-```
+include <tunables/global>
+
+/usr/sbin/nginx flags=(complain) {
+  include <abstractions/base>
+
+  capability dac_override,
+
+  /usr/sbin/nginx mr,
+  /var/log/nginx/error.log w,
+
+}
+
 
 ### Accesos necesarios y motivo
 
@@ -127,16 +147,15 @@ sudo systemctl status nginx --no-pager
 curl -I http://127.0.0.1
 ```
 
-**Captura 7 — Perfil en enforce:** [añadir captura de `aa-status` en la que se vea Nginx en enforce]
+**Captura 7 — Perfil en enforce:** 
 
-**Captura 8 — Funcionamiento tras el confinamiento:** [añadir captura con Nginx activo y respuesta HTTP correcta tras el reinicio]
+<img width="758" height="350" alt="image" src="https://github.com/user-attachments/assets/93fec805-7a2e-4ded-b201-85189ed66f31" />
 
-Si el reinicio falla, debo revisar los eventos de AppArmor, ajustar el perfil con los permisos estrictamente necesarios y repetir la prueba.
 
-```bash
-sudo journalctl -u nginx -n 30 --no-pager
-sudo journalctl -k --no-pager | grep -i apparmor | tail -n 30
-```
+**Captura 8 — Funcionamiento tras el confinamiento:**
+<img width="907" height="331" alt="image" src="https://github.com/user-attachments/assets/d7647da8-59a2-4e88-90c7-97931e727eb7" />
+
+
 
 ## 8. Diferencia entre complain y enforce
 
@@ -147,7 +166,10 @@ sudo journalctl -k --no-pager | grep -i apparmor | tail -n 30
 
 ## 9. Resultado y reflexión
 
-**Resultado final:** [indicar si el perfil quedó en enforce y si Nginx respondió correctamente, con el código HTTP que apareció]
+**Resultado final:** Bueno, a pesar de que me ha dado bastantes probelemas el nginx al ponerlo en enforce, al final lo he podido solucionar y funciona correctamente:
+<img width="952" height="279" alt="image" src="https://github.com/user-attachments/assets/f07b533e-d0a4-489d-af48-d20ddd0773af" />
+
+
 
 **Reflexión:** He comprobado que Nginx necesita acceder a sus archivos de configuración, a los archivos que sirve y a algunos recursos del sistema para poder trabajar. La parte más importante ha sido permitir solo los accesos necesarios, en lugar de dar permisos a todo. El modo complain me ha servido para identificar los accesos durante las pruebas y el modo enforce para comprobar que el servidor puede funcionar con restricciones.
 

@@ -97,6 +97,8 @@ sudo htpasswd -c /etc/nginx/.htpasswd alumno
 
 Cuando me pida la contraseña, pondré una que recuerde. No voy a subirla ni a subir el archivo `.htpasswd` a GitHub.
 
+<img width="865" height="458" alt="image" src="https://github.com/user-attachments/assets/185bfd13-a55f-4e62-a16f-7298841922cf" />
+
 Después abriré la configuración de la primera web:
 
 ```bash

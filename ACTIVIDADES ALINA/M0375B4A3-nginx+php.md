@@ -244,10 +244,10 @@ curl -I http://db.test
 <img width="535" height="878" alt="image" src="https://github.com/user-attachments/assets/53ca35f0-2ebe-4f84-ae63-2216a9cae0e6" />
 
 
-## 7. Problemas que me hayan salido
+## 7. Problemas que me han salido
 
-- **Problema:** [aquí explicaré el error que me haya salido]
-- **Qué hice para arreglarlo:** [pondré los comandos o cambios que utilicé]
-- **Cómo quedó:** [explicaré si finalmente funcionó]
+- **Problema 1:** Al hacer `ls /run/php/` no aparecía nada. Tenía instalado PHP-FPM, pero tuve que revisar y arrancar su servicio para poder utilizarlo
+- **Problema 2:** Al entrar en MariaDB me salía un error de SSL. Para poder entrar utilicé `sudo mariadb --disable-ssl`
+- **Problema 3:** Al abrir `db.test` me aparecía un error de conexión con la base de datos. Revisé el usuario `webapp`, lo volví a configurar y comprobé que la contraseña coincidiera con la del archivo PHP
 
 

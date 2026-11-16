@@ -241,7 +241,7 @@ curl -I http://php.test
 curl -I http://db.test
 ```
 
-Las páginas normales deberían responder con `200 OK`, mientras que la zona protegida debería devolver `401 Unauthorized` si no pongo contraseña. También abriré las webs en el navegador para ver que muestran el contenido correcto.
+<img width="535" height="878" alt="image" src="https://github.com/user-attachments/assets/53ca35f0-2ebe-4f84-ae63-2216a9cae0e6" />
 
 
 ## 7. Problemas que me hayan salido

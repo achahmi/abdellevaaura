@@ -3,7 +3,6 @@
 ## Objetivo
 En esta actividad voy a montar varias páginas con Nginx. Primero haré dos webs diferentes que utilicen el puerto 80, después pondré una zona con contraseña y por último prepararé una web con PHP y otra que saque información de una base de datos. Iré comprobando cada parte para ver que funciona.
 
-> **Pendiente:** iré añadiendo las capturas y los resultados reales a medida que haga la actividad.
 
 ## Entorno que voy a utilizar
 - Sistema: Kali Linux (Debian)
@@ -27,7 +26,6 @@ ls /run/php/php*-fpm.sock
 
 Si PHP-FPM no aparece funcionando, miraré el nombre de su servicio con `systemctl list-units 'php*-fpm.service'` y lo arrancaré con `sudo systemctl enable --now NOMBRE_DEL_SERVICIO`.
 
-**Captura 1 — aquí pondré:** Nginx activo, versión/servicio de PHP-FPM y MariaDB.
 
 ## 2. Crear dos webs con el mismo puerto 80
 
@@ -83,8 +81,6 @@ curl http://web2.test
 
 Las dos webs utilizan el puerto 80, pero tienen nombres diferentes. Nginx sabe cuál tiene que mostrar gracias al `server_name`. Si quisiera abrirlas desde otro ordenador, tendría que configurar allí los nombres para que apunten a la IP del servidor.
 
-**Captura 2 — aquí pondré:** configuraciones `web1` y `web2` con `listen 80`.
-**Captura 3 — aquí pondré:** ambas páginas abiertas en navegador, mostrando dominios distintos.
 
 ## 3. Poner contraseña a una parte de la web
 
@@ -123,8 +119,6 @@ curl -I http://web1.test/privado/
 
 Si entro sin identificarme, debería aparecer `401 Unauthorized`. Después entraré desde el navegador con el usuario `alumno` y la contraseña que haya creado para comprobar que sí me deja pasar.
 
-**Captura 4 — aquí pondré:** petición sin credenciales con 401 o ventana de autenticación.
-**Captura 5 — aquí pondré:** acceso correcto a la zona protegida.
 
 ## 4. Crear una web con PHP
 
@@ -181,7 +175,6 @@ sudo systemctl reload nginx
 curl http://php.test
 ```
 
-**Captura 6 — aquí pondré:** configuración PHP-FPM de Nginx y página mostrando la fecha generada por PHP.
 
 ## 5. Conectar una web PHP a una base de datos
 
@@ -275,8 +268,6 @@ curl http://db.test
 
 Si la página no consigue conectar con la base de datos, revisaré los servicios con `sudo systemctl status mariadb` y `sudo systemctl status nginx`, y miraré los errores con `sudo tail -n 30 /var/log/nginx/error.log`.
 
-**Captura 7 — aquí pondré:** tabla `productos` con los tres registros desde MariaDB.
-**Captura 8 — aquí pondré:** página `db.test` mostrando los productos obtenidos de la base de datos.
 
 ## 6. Comprobar que todo funciona
 
@@ -293,7 +284,6 @@ curl -I http://db.test
 
 Las páginas normales deberían responder con `200 OK`, mientras que la zona protegida debería devolver `401 Unauthorized` si no pongo contraseña. También abriré las webs en el navegador para ver que muestran el contenido correcto.
 
-**Captura 9 — aquí pondré:** pruebas finales de las cuatro webs y zona protegida.
 
 ## 7. Problemas que me hayan salido
 
@@ -303,7 +293,6 @@ Las páginas normales deberían responder con `200 OK`, mientras que la zona pro
 
 ## 8. Conclusión
 
-Con esta actividad quiero aprender a tener varias webs en Nginx utilizando el mismo puerto, proteger una carpeta con contraseña y hacer páginas que funcionen con PHP y con una base de datos. Cuando termine las pruebas, añadiré aquí el resultado final y las capturas para enseñar que cada parte funciona.
 
 ## Rúbrica de clase
 
@@ -313,4 +302,3 @@ Con esta actividad quiero aprender a tener varias webs en Nginx utilizando el mi
 - [ ] Web con PHP + MySQL/MariaDB — **3 puntos**
 - [ ] Explicación en GitHub y evidencias — **2 puntos**
 
-> Esta es la rúbrica que nos han dado en clase. Iré marcando cada apartado cuando lo tenga hecho y añadiré las capturas correspondientes.

@@ -182,6 +182,8 @@ sudo systemctl reload nginx
 curl http://php.test
 ```
 
+<img width="700" height="278" alt="image" src="https://github.com/user-attachments/assets/15b96000-d055-443c-9df0-e4669e422c98" />
+
 
 ## 5. Conectar una web PHP a una base de datos
 
@@ -208,61 +210,11 @@ CREATE TABLE productos (
 INSERT INTO productos (nombre) VALUES ('Teclado'), ('Raton'), ('Monitor');
 EXIT;
 ```
+<img width="817" height="706" alt="image" src="https://github.com/user-attachments/assets/a5597377-5ccc-4fd9-96ec-5ef6f1cdf85e" />
 
 Cuando esté lista la tabla, crearé la página PHP:
+<img width="726" height="330" alt="image" src="https://github.com/user-attachments/assets/4951f3c0-4188-488a-a9c0-e12e28506b82" />
 
-```bash
-sudo mkdir -p /var/www/db
-sudo nano /var/www/db/index.php
-```
-
-```php
-<?php
-try {
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=actividad_nginx;charset=utf8mb4',
-        'webapp',
-        'CAMBIAR_POR_CONTRASENA_SEGURA',
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
-    $productos = $pdo->query('SELECT nombre FROM productos')->fetchAll(PDO::FETCH_ASSOC);
-    echo '<h1>Productos de la base de datos</h1><ul>';
-    foreach ($productos as $producto) {
-        echo '<li>' . htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') . '</li>';
-    }
-    echo '</ul>';
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo 'Error al conectar con la base de datos';
-}
-?>
-```
-
-Pondré la misma contraseña segura donde aparece `CAMBIAR_POR_CONTRASENA_SEGURA` en los dos ejemplos. No subiré una contraseña real a GitHub. Si esto fuera una web real, guardaría esa contraseña fuera de la carpeta pública.
-
-Crear el sitio:
-
-```bash
-sudo nano /etc/nginx/sites-available/db
-```
-
-```nginx
-server {
-    listen 80;
-    server_name db.test;
-    root /var/www/db;
-    index index.php;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
-    }
-}
-```
 
 Igual que antes, cambiaré el nombre del socket de PHP si mi versión es diferente.
 

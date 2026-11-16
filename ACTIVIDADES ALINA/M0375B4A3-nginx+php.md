@@ -291,14 +291,4 @@ Las páginas normales deberían responder con `200 OK`, mientras que la zona pro
 - **Qué hice para arreglarlo:** [pondré los comandos o cambios que utilicé]
 - **Cómo quedó:** [explicaré si finalmente funcionó]
 
-## 8. Conclusión
-
-
-## Rúbrica de clase
-
-- [ ] Dos webs estáticas con dominios distintos y puerto 80 — **2 puntos**
-- [ ] Acceso a zona protegida — **1 punto**
-- [ ] Web con PHP — **2 puntos**
-- [ ] Web con PHP + MySQL/MariaDB — **3 puntos**
-- [ ] Explicación en GitHub y evidencias — **2 puntos**
 

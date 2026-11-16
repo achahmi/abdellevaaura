@@ -81,6 +81,9 @@ curl http://web2.test
 
 Las dos webs utilizan el puerto 80, pero tienen nombres diferentes. Nginx sabe cuál tiene que mostrar gracias al `server_name`. Si quisiera abrirlas desde otro ordenador, tendría que configurar allí los nombres para que apunten a la IP del servidor.
 
+<img width="641" height="365" alt="image" src="https://github.com/user-attachments/assets/579c8aa2-b963-49f2-b5f7-3a34590031cb" />
+
+<img width="690" height="303" alt="image" src="https://github.com/user-attachments/assets/b8420837-fb32-4b86-8247-1a3b6ff9a24d" />
 
 ## 3. Poner contraseña a una parte de la web
 
